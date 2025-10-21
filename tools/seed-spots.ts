@@ -8,10 +8,10 @@ const firebaseConfig = {
 
 let ALLOWED_SPOTS: string[];
 try {
-    ALLOWED_SPOTS = JSON.parse(process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["A1","A2","B1","B2"]');
+    ALLOWED_SPOTS = JSON.parse(process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["P1","P2","P3","P4"]');
 } catch (e) {
     console.error("Error parsing NEXT_PUBLIC_ALLOWED_SPOTS_JSON, using default spots.", e);
-    ALLOWED_SPOTS = ["A1", "A2", "B1", "B2"];
+    ALLOWED_SPOTS = ["P1", "P2", "P3", "P4"];
 }
 
 

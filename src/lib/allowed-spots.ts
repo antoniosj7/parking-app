@@ -8,7 +8,7 @@ let spots: Set<string>;
 
 try {
   // El valor por defecto es una cadena JSON válida.
-  const allowedSpotsJson = process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["A1","A2","B1","B2"]';
+  const allowedSpotsJson = process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["P1","P2","P3","P4"]';
   
   // Limpiamos posibles comillas extra que puedan venir del entorno
   const cleanedJson = allowedSpotsJson.replace(/^'|'$/g, '');
