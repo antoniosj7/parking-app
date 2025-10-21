@@ -5,6 +5,9 @@ export type ParkingSpot = {
   status: ParkingSpotStatus;
   user?: string;
   reservationEndTime?: string;
+  lastChangeAt?: any;
+  currentSessionId?: string | null;
+  occupied?: boolean;
 };
 
 export type ParkingSession = {

@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Autor: Antonio SJ
+    // Reglas para la colección 'spots'.
+    match /spots/{spotId} {
+      // Cualquier usuario autenticado puede leer.
+      allow read: if request.auth != null;
+      // Solo los administradores pueden escribir (crear, actualizar, eliminar).
+      allow write: if request.auth != null && request.auth.token.role == "admin";
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

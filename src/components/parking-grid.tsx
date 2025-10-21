@@ -1,50 +1,57 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { parkingSpots as initialSpots } from '@/lib/data';
 import type { ParkingSpot as ParkingSpotType } from '@/lib/types';
 import ParkingSpot from './parking-spot';
+import { ALLOWED_SPOTS } from '@/lib/allowed-spots';
 
 export default function ParkingGrid() {
-  const [spots, setSpots] = useState<ParkingSpotType[]>([]);
+  const [spots] = useState<ParkingSpotType[]>([]);
+  const [notAllowedSpots, setNotAllowedSpots] = useState<ParkingSpotType[]>([]);
 
+  // Simulación de detección de plazas no permitidas
   useEffect(() => {
-    setSpots(initialSpots);
-  }, [])
+    // Esta función simula la detección de una plaza no permitida
+    const detectNotAllowedSpot = () => {
+        const notAllowedSpot: ParkingSpotType = {
+            id: 'C-01',
+            status: 'occupied',
+            lastChangeAt: new Date(),
+        };
+        setNotAllowedSpots(prev => [...prev, notAllowedSpot]);
 
-  // Simulate real-time updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSpots(currentSpots => {
-        if (currentSpots.length === 0) return [];
-        const newSpots = [...currentSpots];
-        const randomIndex = Math.floor(Math.random() * newSpots.length);
-        const statusOptions: ParkingSpotType['status'][] = ['available', 'occupied', 'reserved'];
-        const currentStatus = newSpots[randomIndex].status;
-        let newStatus: ParkingSpotType['status'];
-        do {
-          newStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
-        } while (newStatus === currentStatus);
-        
-        newSpots[randomIndex] = { ...newSpots[randomIndex], status: newStatus };
-        return newSpots;
-      });
-    }, 5000); // Update a random spot every 5 seconds
+        // Ocultar la plaza no permitida después de 10 segundos
+        setTimeout(() => {
+            setNotAllowedSpots(prev => prev.filter(s => s.id !== notAllowedSpot.id));
+        }, 10000);
+    };
 
-    return () => clearInterval(interval);
+    const intervalId = setInterval(detectNotAllowedSpot, 20000); // Simula la detección cada 20s
+
+    return () => clearInterval(intervalId);
   }, []);
 
-  if (spots.length === 0) {
+  const allSpots = [...spots, ...notAllowedSpots];
+
+  if (allSpots.length === 0 && Array.from(ALLOWED_SPOTS).length === 0) {
     return (
       <div className="text-center text-muted-foreground">
-        Loading parking grid...
+        Cargando parrilla de aparcamiento... (Asegúrese de ejecutar `npm run seed:spots`)
       </div>
     );
   }
 
+  const allowedSpotsToRender = Array.from(ALLOWED_SPOTS).map(id => {
+    const existingSpot = allSpots.find(s => s.id === id);
+    return existingSpot || { id, status: 'available', lastChangeAt: new Date() };
+  });
+
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
-      {spots.map(spot => (
+      {allowedSpotsToRender.map(spot => (
         <ParkingSpot key={spot.id} spot={spot} />
+      ))}
+      {notAllowedSpots.map(spot => (
+        <ParkingSpot key={spot.id} spot={spot} isNotAllowed={true} />
       ))}
     </div>
   );
