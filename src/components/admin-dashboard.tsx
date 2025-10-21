@@ -4,7 +4,6 @@ import SessionManagementTable from "./session-management-table";
 import { Activity, GanttChartSquare, CheckCircle, Database } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ALLOWED_SPOTS } from "@/lib/allowed-spots";
-import CacheMetricsChart from "./cache-metrics-chart";
 
 export default function AdminDashboard() {
   const allowedSpotsList = Array.from(ALLOWED_SPOTS).join(', ');
@@ -34,19 +33,6 @@ export default function AdminDashboard() {
         </CardHeader>
         <CardContent>
           <OccupancyChart />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-headline text-2xl font-medium">Métricas de Caché (Conceptual)</CardTitle>
-            <Database className="h-6 w-6 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-            <CacheMetricsChart />
-             <p className="text-sm text-muted-foreground mt-2">
-                Ilustra los aciertos (hits) y fallos (misses) de la caché de datos de la aplicación.
-            </p>
         </CardContent>
       </Card>
 
