@@ -7,36 +7,42 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
 import { Menu, X } from 'lucide-react';
 import React from 'react';
 
-const AdminNavLinks = () => (
-  <>
-    <SheetClose asChild>
-      <Link href="/admin" className="font-semibold text-foreground">Panel Principal</Link>
-    </SheetClose>
-    <SheetClose asChild>
-      <Link href="/admin/statistics" className="text-muted-foreground">Estadísticas</Link>
-    </SheetClose>
-    <SheetClose asChild>
-      <Link href="/admin/user-management" className="text-muted-foreground">Gestión de Usuarios</Link>
-    </SheetClose>
-    <SheetClose asChild>
-      <Link href="/grid" className="text-muted-foreground">Ver Parqueo</Link>
-    </SheetClose>
-  </>
-);
+const AdminNavLinks = ({ isMobile }: { isMobile?: boolean }) => {
+  const LinkWrapper = isMobile ? SheetClose : React.Fragment;
+  return (
+    <>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/admin" className="font-semibold text-foreground">Panel Principal</Link>
+      </LinkWrapper>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/admin/statistics" className="text-muted-foreground">Estadísticas</Link>
+      </LinkWrapper>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/admin/user-management" className="text-muted-foreground">Gestión de Usuarios</Link>
+      </LinkWrapper>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/grid" className="text-muted-foreground">Ver Parqueo</Link>
+      </LinkWrapper>
+    </>
+  );
+};
 
-const UserNavLinks = () => (
-  <>
-    <SheetClose asChild>
-      <Link href="/grid" className="font-semibold text-foreground">Lugares Disponibles</Link>
-    </SheetClose>
-    <SheetClose asChild>
-      <Link href="/my-account" className="text-muted-foreground">Mi Cuenta (Uso y Pago)</Link>
-    </SheetClose>
-    <SheetClose asChild>
-      <Link href="/history" className="text-muted-foreground">Historial de Uso</Link>
-    </SheetClose>
-  </>
-);
+const UserNavLinks = ({ isMobile }: { isMobile?: boolean }) => {
+  const LinkWrapper = isMobile ? SheetClose : React.Fragment;
+  return (
+    <>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/grid" className="font-semibold text-foreground">Lugares Disponibles</Link>
+      </LinkWrapper>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/my-account" className="text-muted-foreground">Mi Cuenta (Uso y Pago)</Link>
+      </LinkWrapper>
+      <LinkWrapper {...(isMobile && { asChild: true })}>
+        <Link href="/history" className="text-muted-foreground">Historial de Uso</Link>
+      </LinkWrapper>
+    </>
+  );
+};
 
 
 export default function Header() {
@@ -76,7 +82,7 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="left">
                     <nav className="grid gap-6 text-lg font-medium mt-8">
-                       {isAdmin ? <AdminNavLinks /> : <UserNavLinks />}
+                       {isAdmin ? <AdminNavLinks isMobile /> : <UserNavLinks isMobile />}
                     </nav>
                 </SheetContent>
             </Sheet>
