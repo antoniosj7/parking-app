@@ -12,6 +12,8 @@ import { parkingSessions } from "@/lib/data"
 import { Clock } from "lucide-react";
 
 export default function SessionManagementTable() {
+  const activeSessions = parkingSessions.filter(session => session.status === 'active');
+  
   return (
     <Table>
       <TableHeader>
@@ -25,7 +27,7 @@ export default function SessionManagementTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {parkingSessions.map((session) => (
+        {activeSessions.map((session) => (
           <TableRow key={session.id}>
             <TableCell className="font-medium">{session.spotId}</TableCell>
             <TableCell>{session.user}</TableCell>
@@ -33,7 +35,7 @@ export default function SessionManagementTable() {
             <TableCell>{session.duration}</TableCell>
             <TableCell>
               <Badge variant={session.status === 'active' ? 'default' : 'secondary'}>
-                {session.status}
+                Activa
               </Badge>
             </TableCell>
             <TableCell className="text-right space-x-2">
