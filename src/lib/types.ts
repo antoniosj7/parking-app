@@ -15,12 +15,11 @@ export type ParkingSession = {
   spotId: string;
   user: string;
   startTime: string;
+  duration: string;
   status: 'active' | 'completed';
 };
 
-export type CacheMetricData = {
-  name: string;
-  hits: number;
-  misses: number;
-  latency: number;
+export type OccupancyData = {
+  hour: string;
+  occupied: number;
 };

@@ -1,6 +1,5 @@
-// Antonio SJ
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import CacheMetricsChart from "./cache-metrics-chart";
+import OccupancyChart from "./occupancy-chart";
 import SessionManagementTable from "./session-management-table";
 import { Activity, GanttChartSquare, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +10,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="grid gap-8">
-      <Card>
+       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="font-headline text-2xl font-medium">Configuración de Plazas</CardTitle>
             <CheckCircle className="h-6 w-6 text-muted-foreground" />
@@ -21,21 +20,24 @@ export default function AdminDashboard() {
                 <span className="font-medium">Plazas Permitidas:</span>
                 <Badge variant="secondary">{allowedSpotsList}</Badge>
             </div>
+            <p className="text-sm text-muted-foreground mt-2">
+                Estas son las plazas que el sistema reconocerá. Los datos de cualquier otra plaza serán ignorados.
+            </p>
         </CardContent>
       </Card>
 
       <Card className="lg:col-span-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-headline text-2xl font-medium">Cache Metrics</CardTitle>
+          <CardTitle className="font-headline text-2xl font-medium">Estadísticas de Ocupación (Últimas Horas)</CardTitle>
           <Activity className="h-6 w-6 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <CacheMetricsChart />
+          <OccupancyChart />
         </CardContent>
       </Card>
       <Card className="lg:col-span-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-headline text-2xl font-medium">Session Management</CardTitle>
+          <CardTitle className="font-headline text-2xl font-medium">Gestión de Sesiones Activas</CardTitle>
           <GanttChartSquare className="h-6 w-6 text-muted-foreground" />
         </CardHeader>
         <CardContent>

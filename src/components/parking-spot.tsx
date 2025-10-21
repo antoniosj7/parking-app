@@ -3,9 +3,10 @@
 
 import type { ParkingSpot as ParkingSpotType } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Car, Ban, Clock, AlertTriangle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Car, Ban, Clock, AlertTriangle, ParkingCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Button } from './ui/button';
 
 interface ParkingSpotProps {
   spot: ParkingSpotType;
@@ -16,14 +17,17 @@ const statusConfig = {
   available: {
     label: 'Disponible',
     icon: <Car className="h-8 w-8" />,
+    action: <Button size="sm">Reservar</Button>
   },
   occupied: {
     label: 'Ocupado',
     icon: <Ban className="h-8 w-8" />,
+    action: null
   },
   reserved: {
     label: 'Reservado',
     icon: <Clock className="h-8 w-8" />,
+    action: null
   },
 };
 
@@ -59,7 +63,7 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
     <Card
       data-status={spot.status}
       className={cn(
-        'flex flex-col items-center justify-center text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
+        'flex flex-col items-center justify-between text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
         'spot-card' 
       )}
     >
@@ -72,10 +76,10 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
         <div className="spot-icon">{config.icon}</div>
         <p className="text-sm font-medium">{config.label}</p>
         {spot.user && <p className="text-xs text-muted-foreground">User: {spot.user}</p>}
-        {spot.reservationEndTime && (
-          <p className="text-xs text-muted-foreground">Until: {spot.reservationEndTime}</p>
-        )}
       </CardContent>
+      <CardFooter className="p-2 w-full">
+         {config.action}
+      </CardFooter>
     </Card>
   );
 }

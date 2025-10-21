@@ -1,23 +1,21 @@
-import type { ParkingSession, CacheMetricData } from '@/lib/types';
+import type { ParkingSession, OccupancyData } from '@/lib/types';
 
-// Este archivo ya no genera datos de aparcamiento.
-// Los datos se crearán a través de los scripts de semilla.
-export const parkingSpots: never[] = [];
-
-export const cacheMetrics: CacheMetricData[] = [
-  { name: '08:00', hits: 4000, misses: 2400, latency: 24 },
-  { name: '09:00', hits: 3000, misses: 1398, latency: 22 },
-  { name: '10:00', hits: 2000, misses: 7800, latency: 29 },
-  { name: '11:00', hits: 2780, misses: 3908, latency: 20 },
-  { name: '12:00', hits: 1890, misses: 4800, latency: 21 },
-  { name: '13:00', hits: 2390, misses: 3800, latency: 25 },
-  { name: '14:00', hits: 3490, misses: 4300, latency: 21 },
+export const occupancyData: OccupancyData[] = [
+  { hour: '08:00', occupied: 4 },
+  { hour: '09:00', occupied: 7 },
+  { hour: '10:00', occupied: 6 },
+  { hour: '11:00', occupied: 9 },
+  { hour: '12:00', occupied: 11 },
+  { hour: '13:00', occupied: 10 },
+  { hour: '14:00', occupied: 12 },
+  { hour: '15:00', occupied: 12 },
+  { hour: '16:00', occupied: 10 },
 ];
 
-
 export const parkingSessions: ParkingSession[] = [
-  { id: 'sess-1', spotId: 'A1', user: 'User5', startTime: '09:15', status: 'active' },
-  { id: 'sess-2', spotId: 'A2', user: 'User12', startTime: '10:30', status: 'active' },
-  { id: 'sess-3', spotId: 'B1', user: 'User3', startTime: '08:45', status: 'active' },
-  { id: 'sess-4', spotId: 'B2', user: 'User20', startTime: '11:05', status: 'active' },
+  { id: 'sess-1', spotId: 'A1', user: 'User5', startTime: '09:15', duration: '2h 15m', status: 'active' },
+  { id: 'sess-2', spotId: 'A4', user: 'User12', startTime: '10:30', duration: '1h 0m', status: 'active' },
+  { id: 'sess-3', spotId: 'B2', user: 'User3', startTime: '08:45', duration: '2h 45m', status: 'active' },
+  { id: 'sess-5', spotId: 'C1', user: 'UserX', startTime: '11:00', duration: '0h 30m', status: 'completed' },
+  { id: 'sess-4', spotId: 'C3', user: 'User20', startTime: '11:05', duration: '0h 25m', status: 'active' },
 ];

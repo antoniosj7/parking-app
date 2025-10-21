@@ -28,11 +28,16 @@ export default function LoginForm() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // Simulación de autenticación
     if (email.toLowerCase() === 'admin' && password === '1234') {
         toast({
+            title: "Login de Administrador exitoso",
+            description: "Bienvenido, admin. Redirigiendo al panel...",
+        });
+        router.push('/admin');
+    } else if (email.toLowerCase() === 'usuario1' && password === '1234') {
+        toast({
             title: "Login exitoso",
-            description: "Bienvenido, admin. Redirigiendo...",
+            description: "Bienvenido. Redirigiendo a la parrilla de aparcamiento...",
         });
         router.push('/grid');
     } else {
@@ -45,7 +50,7 @@ export default function LoginForm() {
   };
 
   return (
-      <Card className="w-full">
+      <Card className="w-full bg-card/80 backdrop-blur-sm">
         <CardHeader className="text-center">
             <Logo className="mx-auto h-16 w-16 mb-2" />
           <CardTitle className="text-2xl font-headline">Bienvenido a PUMG</CardTitle>
@@ -61,7 +66,7 @@ export default function LoginForm() {
                 id="email"
                 name="email"
                 type="text"
-                placeholder="admin"
+                placeholder="admin o usuario1"
                 required
               />
             </div>

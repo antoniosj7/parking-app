@@ -1,28 +1,24 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import { cacheMetrics } from "@/lib/data"
+import { occupancyData } from "@/lib/data"
 
 const chartConfig = {
-  hits: {
-    label: "Hits",
+  occupied: {
+    label: "Ocupadas",
     color: "hsl(var(--chart-1))",
-  },
-  misses: {
-    label: "Misses",
-    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
-export default function CacheMetricsChart() {
+export default function OccupancyChart() {
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
       <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={cacheMetrics} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <LineChart data={occupancyData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis
-            dataKey="name"
+            dataKey="hour"
             stroke="hsl(var(--foreground))"
             fontSize={12}
             tickLine={false}
@@ -33,15 +29,21 @@ export default function CacheMetricsChart() {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `${value / 1000}k`}
+            allowDecimals={false}
+            domain={[0, 'dataMax + 2']}
           />
           <Tooltip
             cursor={{fill: 'hsla(var(--card))'}}
-            content={<ChartTooltipContent hideLabel />}
+            content={<ChartTooltipContent />}
           />
-          <Bar dataKey="hits" fill="var(--color-hits)" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="misses" fill="var(--color-misses)" radius={[4, 4, 0, 0]} />
-        </BarChart>
+          <Line
+            dataKey="occupied"
+            type="monotone"
+            stroke="var(--color-occupied)"
+            strokeWidth={2}
+            dot={true}
+          />
+        </LineChart>
       </ResponsiveContainer>
     </ChartContainer>
   )
