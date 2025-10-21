@@ -131,7 +131,6 @@ export default function LoginForm() {
                 name="email"
                 type="text"
                 autoComplete="email"
-                placeholder="tu@correo.com o admin"
                 required
                 disabled={loading || googleLoading}
                 value={email}
@@ -151,7 +150,6 @@ export default function LoginForm() {
                 type="password" 
                 autoComplete="current-password"
                 required 
-                placeholder="••••••••••"
                 disabled={loading || googleLoading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
