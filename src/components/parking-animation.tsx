@@ -43,10 +43,8 @@ export default function ParkingAnimation() {
         </div>
 
         {/* Parking Lines */}
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className={styles.slot}>
-            <div className={styles.line}></div>
-          </div>
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className={styles.slot}></div>
         ))}
       </div>
     </div>
