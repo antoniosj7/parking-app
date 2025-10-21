@@ -63,11 +63,6 @@ export default function Header() {
   // El menú de admin solo se muestra en las rutas /admin/*
   const isAdminPath = pathname.startsWith('/admin');
 
-  // Si estamos en /grid, debemos decidir si es un admin viéndola o un usuario normal.
-  // Por ahora, asumimos que si no es una ruta de admin, es de usuario.
-  // La ruta /grid por sí sola no determina el rol.
-  const isAdminView = isAdminPath;
-
   const getLogoLink = () => {
     // Si estamos en una ruta de admin, el logo lleva a /admin.
     // Si no, lleva a /grid, la página principal del usuario.
