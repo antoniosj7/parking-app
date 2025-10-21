@@ -1,12 +1,17 @@
-import ParkingGrid from "@/components/parking-grid";
+import ParkingAnimation from "@/components/parking-animation";
+import LoginForm from "@/components/login-form";
 
-export default function Home() {
+export default function LoginPage() {
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="mb-8 text-center font-headline text-4xl font-bold tracking-tight md:text-5xl">
-        Real-Time Parking Grid
-      </h1>
-      <ParkingGrid />
+    <div className="relative min-h-screen w-full overflow-hidden">
+      <div className="absolute inset-0">
+         <ParkingAnimation />
+      </div>
+      <div className="relative z-10 flex min-h-screen items-center justify-center p-4 md:justify-end">
+        <div className="w-full max-w-md md:mr-[10%]">
+          <LoginForm />
+        </div>
+      </div>
     </div>
   );
 }
