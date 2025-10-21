@@ -2,6 +2,7 @@
 import { useUser } from '@/firebase';
 import MainNav from '@/components/main-nav';
 import Loading from '@/app/loading';
+import Header from '@/components/header';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useUser();
@@ -17,9 +18,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   // Si hay usuario, mostramos el layout principal con el menú de navegación.
   return (
-    <div className="main-layout" id="main-layout">
-      <MainNav />
-      <main className="flex-1 overflow-auto">{children}</main>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-1 p-8">{children}</main>
     </div>
   );
 }
