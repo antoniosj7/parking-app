@@ -16,14 +16,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo"
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import React, { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
+
+    // Simulamos una pequeña demora para que la animación sea visible
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -46,11 +53,12 @@ export default function LoginForm() {
             title: "Error de autenticación",
             description: "Usuario o contraseña incorrectos.",
         });
+        setLoading(false);
     }
   };
 
   return (
-      <Card className="w-full bg-card/80 backdrop-blur-sm">
+      <Card className="w-full">
         <CardHeader className="text-center">
             <Logo className="mx-auto h-16 w-16 mb-2" />
           <CardTitle className="text-2xl font-headline">Bienvenido a PUMG</CardTitle>
@@ -67,6 +75,7 @@ export default function LoginForm() {
                 name="email"
                 type="text"
                 required
+                disabled={loading}
               />
             </div>
             <div className="grid gap-2">
@@ -76,12 +85,13 @@ export default function LoginForm() {
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
-              <Input id="password" name="password" type="password" required />
+              <Input id="password" name="password" type="password" required disabled={loading} />
             </div>
-            <Button type="submit" className="w-full">
-              Iniciar Sesión
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
-            <Button variant="outline" className="w-full" type="button">
+            <Button variant="outline" className="w-full" type="button" disabled={loading}>
               <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 177.2 56.4l-63.1 61.9C338.4 99.8 298.4 87 248 87c-73.2 0-134.3 59.4-134.3 132.3s61.1 132.3 134.3 132.3c84.3 0 115.7-64.2 120.2-95.7H248v-65.8h239.2c1.2 12.8 2.3 26.7 2.3 41.8z"></path></svg>
               Iniciar con Google
             </Button>
