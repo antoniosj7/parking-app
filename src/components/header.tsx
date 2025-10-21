@@ -60,13 +60,18 @@ const UserNav = () => (
 
 export default function Header() {
   const pathname = usePathname();
-  // El menú de admin se muestra en las rutas /admin/* y en /grid
-  const isAdminView = pathname.startsWith('/admin') || pathname === '/grid';
+  // El menú de admin solo se muestra en las rutas /admin/*
+  const isAdminPath = pathname.startsWith('/admin');
+
+  // Si estamos en /grid, debemos decidir si es un admin viéndola o un usuario normal.
+  // Por ahora, asumimos que si no es una ruta de admin, es de usuario.
+  // La ruta /grid por sí sola no determina el rol.
+  const isAdminView = isAdminPath;
 
   const getLogoLink = () => {
-    // Si estamos en cualquier ruta que no sea de admin, el logo lleva a /grid
-    // Si estamos en una ruta de admin, el logo lleva a /admin
-    return pathname.startsWith('/admin') ? '/admin' : '/grid';
+    // Si estamos en una ruta de admin, el logo lleva a /admin.
+    // Si no, lleva a /grid, la página principal del usuario.
+    return isAdminPath ? '/admin' : '/grid';
   }
 
   return (
@@ -79,7 +84,7 @@ export default function Header() {
           </span>
         </Link>
         
-        {isAdminView ? <AdminNav /> : <UserNav />}
+        {isAdminPath ? <AdminNav /> : <UserNav />}
 
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
