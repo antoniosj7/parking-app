@@ -12,97 +12,60 @@
   overflow: hidden;
 }
 
-.parkingLot {
+.road {
   position: relative;
-  width: 1200px;
-  height: 300px;
-  display: flex;
-  justify-content: space-around;
-  /* Remove borders for a cleaner look */
-}
-
-.slot {
-  position: relative;
-  width: 150px;
-  height: 100%;
+  width: 100%;
+  height: 250px;
   display: flex;
   justify-content: center;
-  border-right: 4px dashed hsl(var(--foreground) / 0.2);
+  align-items: center;
 }
-
-.slot:first-child {
-  border-left: 4px dashed hsl(var(--foreground) / 0.2);
-}
-
 
 .carWrapper {
   position: absolute;
-  width: 60px; /* Width of the car */
-  height: 120px; /* Height of the car */
   will-change: transform;
 }
 
 .car {
-  width: 100%;
-  height: 100%;
-  transform: rotate(90deg);
+  width: 100px;
+  height: 40px;
+  fill: hsl(var(--background));
+  stroke: hsl(var(--foreground));
+  stroke-width: 2px;
 }
 
 /* --- ANIMATIONS --- */
 
-/* CAR 1: Enters from top, parks in slot 2, leaves */
-@keyframes car1-move {
-  0% { transform: translate(250px, -200px) rotate(0deg); }
-  20% { transform: translate(250px, 80px) rotate(0deg); } /* Move into position */
-  30% { transform: translate(250px, 80px) rotate(-90deg); } /* Rotate to park */
-  40% { transform: translate(180px, 80px) rotate(-90deg); } /* Park */
-  60% { transform: translate(180px, 80px) rotate(-90deg); } /* Wait */
-  70% { transform: translate(250px, 80px) rotate(-90deg); } /* Pull out */
-  80% { transform: translate(250px, 80px) rotate(0deg); } /* Rotate to leave */
-  100% { transform: translate(250px, 400px) rotate(0deg); } /* Drive away */
+@keyframes drive-by-left {
+  0% { transform: translateX(-200px); }
+  100% { transform: translateX(calc(100vw + 200px)); }
+}
+
+@keyframes drive-by-right {
+  0% { transform: translateX(calc(100vw + 200px)) scaleX(-1); }
+  100% { transform: translateX(-200px) scaleX(-1); }
 }
 
 .car1 {
-  animation: car1-move 15s ease-in-out infinite;
+  bottom: 160px;
+  animation: drive-by-left 10s linear infinite;
   animation-delay: 0s;
 }
 
-/* CAR 2: Enters from bottom, parks in slot 5 */
-@keyframes car2-move {
-  0% { transform: translate(800px, 400px) rotate(180deg); }
-  25% { transform: translate(800px, 80px) rotate(180deg); }
-  35% { transform: translate(800px, 80px) rotate(90deg); }
-  45% { transform: translate(870px, 80px) rotate(90deg); }
-  100% { transform: translate(870px, 80px) rotate(90deg); } /* Stays parked */
-}
-
 .car2 {
-  animation: car2-move 12s ease-in-out infinite;
-  animation-delay: 2s;
-}
-
-/* CAR 3: Starts in slot 4, leaves */
-@keyframes car3-move {
-  0%, 10% { transform: translate(520px, 80px) rotate(-90deg); } /* Starts parked */
-  20% { transform: translate(590px, 80px) rotate(-90deg); } /* Pull out */
-  30% { transform: translate(590px, 80px) rotate(0deg); } /* Rotate */
-  50% { transform: translate(590px, -200px) rotate(0deg); } /* Drive off */
-  51%, 100% { transform: translate(590px, 400px) rotate(0deg); opacity: 0; } /* Disappear and reset */
+  bottom: 100px;
+  animation: drive-by-right 12s linear infinite;
+  animation-delay: 3s;
 }
 
 .car3 {
-  animation: car3-move 18s ease-in-out infinite;
+  bottom: 40px;
+  animation: drive-by-left 8s linear infinite;
   animation-delay: 5s;
 }
 
-/* CAR 4: Drives across the bottom lane */
-@keyframes car4-move {
-  0% { transform: translate(-150px, 220px) rotate(90deg); }
-  40% { transform: translate(1350px, 220px) rotate(90deg); }
-  100% { transform: translate(1350px, 220px) rotate(90deg); }
-}
-
 .car4 {
-  animation: car4-move 10s linear infinite;
-  animation-delay: 1s;
+  bottom: 200px;
+  animation: drive-by-right 15s linear infinite;
+  animation-delay: 8s;
 }
