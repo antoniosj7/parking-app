@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, BarChart, Clock } from "lucide-react";
+import { BarChart, Clock } from "lucide-react";
 
 export default function StatisticsPage() {
   return (
@@ -17,7 +17,7 @@ export default function StatisticsPage() {
                 <CardTitle className="text-sm font-medium">
                   Ingresos Totales (Hoy)
                 </CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <span className="h-4 w-4 text-muted-foreground font-bold">Q</span>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Q 1,250.50</div>

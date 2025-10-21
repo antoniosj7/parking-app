@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Clock, DollarSign } from "lucide-react";
+import { Clock } from "lucide-react";
 
 export default function MyAccountPage() {
   return (
@@ -27,10 +27,10 @@ export default function MyAccountPage() {
                     </div>
                 </div>
                 <div className="flex items-center space-x-4 rounded-md border p-4">
-                    <DollarSign className="h-8 w-8 text-primary" />
+                    <span className="text-2xl font-bold text-primary">Q</span>
                     <div className="flex-1 space-y-1">
                         <p className="text-sm font-medium leading-none">Monto a Pagar</p>
-                        <p className="text-2xl font-bold">Q 12.50</p>
+                        <p className="text-2xl font-bold">12.50</p>
                     </div>
                 </div>
             </CardContent>
