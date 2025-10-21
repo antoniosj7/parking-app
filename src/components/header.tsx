@@ -60,10 +60,13 @@ const UserNav = () => (
 
 export default function Header() {
   const pathname = usePathname();
-  const isAdminSection = pathname.startsWith('/admin');
+  // El menú de admin se muestra en las rutas /admin/* y en /grid
+  const isAdminView = pathname.startsWith('/admin') || pathname === '/grid';
 
   const getLogoLink = () => {
-    return isAdminSection ? '/admin' : '/grid';
+    // Si estamos en cualquier ruta que no sea de admin, el logo lleva a /grid
+    // Si estamos en una ruta de admin, el logo lleva a /admin
+    return pathname.startsWith('/admin') ? '/admin' : '/grid';
   }
 
   return (
@@ -76,7 +79,7 @@ export default function Header() {
           </span>
         </Link>
         
-        {isAdminSection ? <AdminNav /> : <UserNav />}
+        {isAdminView ? <AdminNav /> : <UserNav />}
 
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
