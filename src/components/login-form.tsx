@@ -66,7 +66,6 @@ export default function LoginForm() {
                 id="email"
                 name="email"
                 type="text"
-                placeholder="admin o usuario1"
                 required
               />
             </div>
