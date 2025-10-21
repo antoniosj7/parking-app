@@ -17,19 +17,19 @@ export default function Header() {
             href="/grid"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
-            Parking Grid
+            Parrilla de Aparcamiento
           </Link>
           <Link
             href="/admin"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
-            Admin
+            Administrador
           </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
             <Button asChild variant="outline">
-              <Link href="/">Logout</Link>
+              <Link href="/">Cerrar Sesión</Link>
             </Button>
           </nav>
         </div>

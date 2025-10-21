@@ -75,7 +75,7 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
       <CardContent className="flex flex-col items-center gap-2 p-4 pt-0">
         <div className="spot-icon">{config.icon}</div>
         <p className="text-sm font-medium">{config.label}</p>
-        {spot.user && <p className="text-xs text-muted-foreground">User: {spot.user}</p>}
+        {spot.user && <p className="text-xs text-muted-foreground">Usuario: {spot.user}</p>}
       </CardContent>
       <CardFooter className="p-2 w-full">
          {config.action}

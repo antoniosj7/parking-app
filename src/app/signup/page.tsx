@@ -18,44 +18,44 @@ export default function SignupPage() {
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader className="text-center">
           <Logo className="mx-auto h-16 w-16 mb-2" />
-          <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
+          <CardTitle className="text-2xl font-headline">Crear una Cuenta</CardTitle>
           <CardDescription>
-            Enter your information to create an account with PUMG
+            Introduce tu información para crear una cuenta en PUMG
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">First name</Label>
-                <Input id="first-name" placeholder="Max" required />
+                <Label htmlFor="first-name">Nombre</Label>
+                <Input id="first-name" placeholder="Juan" required />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="last-name">Last name</Label>
-                <Input id="last-name" placeholder="Robinson" required />
+                <Label htmlFor="last-name">Apellidos</Label>
+                <Input id="last-name" placeholder="Pérez" required />
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo Electrónico</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="m@ejemplo.com"
                 required
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input id="password" type="password" />
             </div>
             <Button type="submit" className="w-full">
-              Create an account
+              Crear cuenta
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
+            ¿Ya tienes una cuenta?{" "}
             <Link href="/" className="underline">
-              Sign in
+              Iniciar sesión
             </Link>
           </div>
         </CardContent>
