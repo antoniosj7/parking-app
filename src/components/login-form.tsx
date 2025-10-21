@@ -23,6 +23,8 @@ export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,10 +32,6 @@ export default function LoginForm() {
 
     // Simulamos una pequeña demora para que la animación sea visible
     await new Promise(resolve => setTimeout(resolve, 500));
-
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
 
     if (email.toLowerCase() === 'admin' && password === '1234') {
         toast({
@@ -76,6 +74,8 @@ export default function LoginForm() {
                 type="text"
                 required
                 disabled={loading}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
@@ -85,7 +85,15 @@ export default function LoginForm() {
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
-              <Input id="password" name="password" type="password" required disabled={loading} />
+              <Input 
+                id="password" 
+                name="password" 
+                type="password" 
+                required 
+                disabled={loading}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
