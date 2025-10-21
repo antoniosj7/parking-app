@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Car, Ban, Clock, AlertTriangle, ParkingCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 
 interface ParkingSpotProps {
   spot: ParkingSpotType;
