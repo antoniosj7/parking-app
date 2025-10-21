@@ -27,11 +27,11 @@
 }
 
 .car {
-  width: 100px;
-  height: 40px;
+  width: 80px; /* Ajustamos el tamaño para la nueva proporción */
+  height: auto;
   fill: hsl(var(--background));
   stroke: hsl(var(--foreground));
-  stroke-width: 2px;
+  stroke-width: 2.5px;
 }
 
 /* --- ANIMATIONS --- */
