@@ -17,11 +17,14 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "@/firebase";
 
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
   const { setUserRole } = useUserRole();
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,29 +33,50 @@ export default function LoginForm() {
     event.preventDefault();
     setLoading(true);
 
-    // Simulamos una pequeña demora para que la animación sea visible
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    if (email.toLowerCase() === 'admin' && password === '1234') {
+    // Hardcoded admin login
+    if (email.toLowerCase() === 'admin@pumg.com' && password === 'admin123') {
         setUserRole('admin');
         toast({
             title: "Login de Administrador exitoso",
             description: "Bienvenido, admin. Redirigiendo al panel...",
         });
         router.push('/admin');
-    } else if (email.toLowerCase() === 'usuario1' && password === '1234') {
+        setLoading(false);
+        return;
+    }
+
+    if (!auth) {
+        toast({
+            variant: "destructive",
+            title: "Error de configuración",
+            description: "No se ha podido conectar con el servicio de autenticación.",
+        });
+        setLoading(false);
+        return;
+    }
+    
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
         setUserRole('user');
         toast({
             title: "Login exitoso",
             description: "Bienvenido. Redirigiendo a la parrilla de aparcamiento...",
         });
         router.push('/grid');
-    } else {
+    } catch (error: any) {
+        let description = "Usuario o contraseña incorrectos.";
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            description = "El correo electrónico o la contraseña son incorrectos.";
+        } else if (error.code === 'auth/invalid-email') {
+            description = "El formato del correo electrónico no es válido.";
+        }
+
         toast({
             variant: "destructive",
             title: "Error de autenticación",
-            description: "Usuario o contraseña incorrectos.",
+            description: description,
         });
+    } finally {
         setLoading(false);
     }
   };
@@ -74,6 +98,8 @@ export default function LoginForm() {
                 id="email"
                 name="email"
                 type="text"
+                autoComplete="email"
+                placeholder="tu@correo.com"
                 required
                 disabled={loading}
                 value={email}
@@ -91,6 +117,7 @@ export default function LoginForm() {
                 id="password" 
                 name="password" 
                 type="password" 
+                autoComplete="current-password"
                 required 
                 disabled={loading}
                 value={password}

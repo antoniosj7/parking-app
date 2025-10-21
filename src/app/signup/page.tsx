@@ -57,7 +57,9 @@ export default function SignupPage() {
         description: `Bienvenido, ${firstName}. Redirigiendo a la parrilla...`,
       });
 
+      // Forzar un refresco de la página al redirigir para asegurar que el estado de autenticación se actualiza
       router.push('/grid');
+      router.refresh();
 
     } catch (error: any) {
       let description = "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.";
