@@ -34,13 +34,14 @@ export default function LoginForm() {
     setLoading(true);
 
     // Hardcoded admin login
-    if (email.toLowerCase() === 'admin@pumg.com' && password === 'admin123') {
+    if (email.toLowerCase() === 'admin' && password === 'admin123') {
         setUserRole('admin');
         toast({
             title: "Login de Administrador exitoso",
             description: "Bienvenido, admin. Redirigiendo al panel...",
         });
         router.push('/admin');
+        router.refresh(); // Force refresh to update header state
         return;
     }
 
@@ -62,6 +63,7 @@ export default function LoginForm() {
             description: "Bienvenido. Redirigiendo a la parrilla de aparcamiento...",
         });
         router.push('/grid');
+        router.refresh(); // Force refresh to update header state
     } catch (error: any) {
         let description = "Usuario o contraseña incorrectos.";
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -98,7 +100,7 @@ export default function LoginForm() {
                 name="email"
                 type="text"
                 autoComplete="email"
-                placeholder="tu@correo.com o admin@pumg.com"
+                placeholder="tu@correo.com o admin"
                 required
                 disabled={loading}
                 value={email}

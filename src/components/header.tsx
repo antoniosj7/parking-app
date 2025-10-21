@@ -4,42 +4,42 @@ import { Logo } from './logo';
 import { Button } from './ui/button';
 import { useUserRole } from '@/context/user-role-context';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import React from 'react';
 
 const AdminNavLinks = ({ isMobile }: { isMobile?: boolean }) => {
-  const LinkWrapper = isMobile ? SheetClose : React.Fragment;
+  const LinkComponent = isMobile ? SheetClose : 'div';
   return (
     <>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/admin" className="font-semibold text-foreground">Panel Principal</Link>
-      </LinkWrapper>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      </LinkComponent>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/admin/statistics" className="text-muted-foreground">Estadísticas</Link>
-      </LinkWrapper>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      </LinkComponent>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/admin/user-management" className="text-muted-foreground">Gestión de Usuarios</Link>
-      </LinkWrapper>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      </LinkComponent>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/grid" className="text-muted-foreground">Ver Parqueo</Link>
-      </LinkWrapper>
+      </LinkComponent>
     </>
   );
 };
 
 const UserNavLinks = ({ isMobile }: { isMobile?: boolean }) => {
-  const LinkWrapper = isMobile ? SheetClose : React.Fragment;
+  const LinkComponent = isMobile ? SheetClose : 'div';
   return (
     <>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/grid" className="font-semibold text-foreground">Lugares Disponibles</Link>
-      </LinkWrapper>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      </LinkComponent>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/my-account" className="text-muted-foreground">Mi Cuenta (Uso y Pago)</Link>
-      </LinkWrapper>
-      <LinkWrapper {...(isMobile && { asChild: true })}>
+      </LinkComponent>
+      <LinkComponent {...(isMobile && { asChild: true })}>
         <Link href="/history" className="text-muted-foreground">Historial de Uso</Link>
-      </LinkWrapper>
+      </LinkComponent>
     </>
   );
 };
