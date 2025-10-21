@@ -1,5 +1,4 @@
 'use client';
-import Header from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { useUser, useCollection } from "@/firebase";
@@ -52,44 +51,39 @@ export default function MyAccountPage() {
   }, [activeSession]);
 
   return (
-    <div className="relative flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">
-        <div className="container mx-auto py-8 px-4">
-          <h1 className="mb-8 font-headline text-4xl font-bold tracking-tight md:text-5xl">
-            Mi Cuenta
-          </h1>
-          <Card>
-            <CardHeader>
-              <CardTitle>Sesión de Aparcamiento Actual</CardTitle>
-              <CardDescription>
-                {loading 
-                  ? "Buscando sesión activa..." 
-                  : activeSession 
-                  ? `Estacionado en la plaza ${activeSession.spotId}.`
-                  : "No tienes ninguna sesión de aparcamiento activa."
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2">
-                <div className="flex items-center space-x-4 rounded-md border p-4">
-                    <Clock className="h-8 w-8 text-primary" />
-                    <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium leading-none">Tiempo Transcurrido</p>
-                        <p className="text-2xl font-bold">{elapsedTime}</p>
-                    </div>
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <h1 className="mb-8 font-headline text-4xl font-bold tracking-tight md:text-5xl">
+        Mi Cuenta
+      </h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Sesión de Aparcamiento Actual</CardTitle>
+          <CardDescription>
+            {loading 
+              ? "Buscando sesión activa..." 
+              : activeSession 
+              ? `Estacionado en la plaza ${activeSession.spotId}.`
+              : "No tienes ninguna sesión de aparcamiento activa."
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="flex items-center space-x-4 rounded-md border p-4">
+                <Clock className="h-8 w-8 text-primary" />
+                <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium leading-none">Tiempo Transcurrido</p>
+                    <p className="text-2xl font-bold">{elapsedTime}</p>
                 </div>
-                <div className="flex items-center space-x-4 rounded-md border p-4">
-                    <span className="text-2xl font-bold text-primary">Q</span>
-                    <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium leading-none">Monto a Pagar</p>
-                        <p className="text-2xl font-bold">{amountToPay}</p>
-                    </div>
+            </div>
+            <div className="flex items-center space-x-4 rounded-md border p-4">
+                <span className="text-2xl font-bold text-primary">Q</span>
+                <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium leading-none">Monto a Pagar</p>
+                    <p className="text-2xl font-bold">{amountToPay}</p>
                 </div>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
+            </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { UserRoleProvider } from '@/context/user-role-context';
+import MainNav from '@/components/main-nav';
 
 export const metadata: Metadata = {
   title: 'PUMG - Parrilla Universal de Gestión de Aparcamiento',
@@ -15,6 +16,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isLoginPage = (children as any)?.type.name === 'LoginPage' || (children as any)?.props?.child?.type.name === 'LoginPage';
+
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
@@ -25,7 +28,14 @@ export default function RootLayout({
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
         <UserRoleProvider>
           <FirebaseClientProvider>
-            {children}
+            {isLoginPage ? (
+              children
+            ) : (
+              <div className="main-layout" id="main-layout">
+                <MainNav />
+                <main className="flex-1 overflow-auto">{children}</main>
+              </div>
+            )}
             <Toaster />
           </FirebaseClientProvider>
         </UserRoleProvider>
