@@ -28,7 +28,7 @@ const AdminNav = () => (
       href="/grid"
       className="text-foreground/60 transition-colors hover:text-foreground"
     >
-      Ver Parrilla
+      Ver Parqueo
     </Link>
   </nav>
 );
