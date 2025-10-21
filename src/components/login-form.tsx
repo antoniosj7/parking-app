@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useAuth } from "@/firebase";
 
 export default function LoginForm() {
@@ -26,14 +26,45 @@ export default function LoginForm() {
   const { setUserRole } = useUserRole();
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleGoogleSignIn = async () => {
+    if (!auth) {
+        toast({
+            variant: "destructive",
+            title: "Error de configuración",
+            description: "No se ha podido conectar con el servicio de autenticación.",
+        });
+        return;
+    }
+    setGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
+    try {
+        await signInWithPopup(auth, provider);
+        setUserRole('user');
+        toast({
+            title: "Login con Google exitoso",
+            description: "Bienvenido. Redirigiendo a la parrilla...",
+        });
+        router.push('/grid');
+        router.refresh();
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Error de autenticación con Google",
+            description: "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.",
+        });
+    } finally {
+        setGoogleLoading(false);
+    }
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
-    // Hardcoded admin login
     if (email.toLowerCase() === 'admin' && password === 'admin123') {
         setUserRole('admin');
         toast({
@@ -41,7 +72,7 @@ export default function LoginForm() {
             description: "Bienvenido, admin. Redirigiendo al panel...",
         });
         router.push('/admin');
-        router.refresh(); // Force refresh to update header state
+        router.refresh();
         return;
     }
 
@@ -63,7 +94,7 @@ export default function LoginForm() {
             description: "Bienvenido. Redirigiendo a la parrilla de aparcamiento...",
         });
         router.push('/grid');
-        router.refresh(); // Force refresh to update header state
+        router.refresh();
     } catch (error: any) {
         let description = "Usuario o contraseña incorrectos.";
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -102,7 +133,7 @@ export default function LoginForm() {
                 autoComplete="email"
                 placeholder="tu@correo.com o admin"
                 required
-                disabled={loading}
+                disabled={loading || googleLoading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -120,18 +151,23 @@ export default function LoginForm() {
                 type="password" 
                 autoComplete="current-password"
                 required 
-                disabled={loading}
+                placeholder="••••••••••"
+                disabled={loading || googleLoading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || googleLoading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
-            <Button variant="outline" className="w-full" type="button" disabled={loading}>
-              <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 177.2 56.4l-63.1 61.9C338.4 99.8 298.4 87 248 87c-73.2 0-134.3 59.4-134.3 132.3s61.1 132.3 134.3 132.3c84.3 0 115.7-64.2 120.2-95.7H248v-65.8h239.2c1.2 12.8 2.3 26.7 2.3 41.8z"></path></svg>
-              Iniciar con Google
+            <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn} disabled={loading || googleLoading}>
+              {googleLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 177.2 56.4l-63.1 61.9C338.4 99.8 298.4 87 248 87c-73.2 0-134.3 59.4-134.3 132.3s61.1 132.3 134.3 132.3c84.3 0 115.7-64.2 120.2-95.7H248v-65.8h239.2c1.2 12.8 2.3 26.7 2.3 41.8z"></path></svg>
+              )}
+              {googleLoading ? 'Iniciando...' : 'Iniciar con Google'}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">

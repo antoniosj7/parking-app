@@ -67,6 +67,24 @@
   }
 }
 
+@layer components {
+  .active-nav-link {
+    @apply relative bg-primary/10 shadow-inner;
+  }
+  .active-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 1rem;
+    right: 1rem;
+    height: 3px;
+    border-radius: 2px;
+    @apply bg-primary;
+    transform: translateY(18px);
+  }
+}
+
+
 .spot-card[data-status='available'] {
   @apply bg-green-50 border-green-200;
 }

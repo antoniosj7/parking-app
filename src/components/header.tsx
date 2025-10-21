@@ -4,50 +4,98 @@ import { Logo } from './logo';
 import { Button } from './ui/button';
 import { useUserRole } from '@/context/user-role-context';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from './ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import React from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
-const AdminNavLinks = ({ isMobile }: { isMobile?: boolean }) => {
-  const LinkComponent = isMobile ? SheetClose : 'div';
-  return (
-    <>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/admin" className="font-semibold text-foreground">Panel Principal</Link>
-      </LinkComponent>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/admin/statistics" className="text-muted-foreground">Estadísticas</Link>
-      </LinkComponent>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/admin/user-management" className="text-muted-foreground">Gestión de Usuarios</Link>
-      </LinkComponent>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/grid" className="text-muted-foreground">Ver Parqueo</Link>
-      </LinkComponent>
-    </>
+interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  isMobile?: boolean;
+}
+
+const NavLink = ({ href, children, isMobile = false }: NavLinkProps) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
+  const linkContent = (
+    <Link
+      href={href}
+      className={cn(
+        "transition-colors duration-200 ease-in-out",
+        "px-4 py-2 rounded-md text-sm font-medium",
+        isMobile 
+          ? "block w-full text-left text-lg" 
+          : "hover:bg-primary/10",
+        isActive
+          ? "active-nav-link text-primary font-semibold"
+          : "text-muted-foreground",
+        isMobile && isActive && "bg-primary/10"
+      )}
+    >
+      {children}
+    </Link>
   );
+
+  if (isMobile) {
+    return <SheetClose asChild>{linkContent}</SheetClose>;
+  }
+
+  return linkContent;
 };
 
-const UserNavLinks = ({ isMobile }: { isMobile?: boolean }) => {
-  const LinkComponent = isMobile ? SheetClose : 'div';
-  return (
+
+const AdminNavLinks = ({ isMobile }: { isMobile?: boolean }) => (
     <>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/grid" className="font-semibold text-foreground">Lugares Disponibles</Link>
-      </LinkComponent>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/my-account" className="text-muted-foreground">Mi Cuenta (Uso y Pago)</Link>
-      </LinkComponent>
-      <LinkComponent {...(isMobile && { asChild: true })}>
-        <Link href="/history" className="text-muted-foreground">Historial de Uso</Link>
-      </LinkComponent>
+      <NavLink href="/admin" isMobile={isMobile}>Panel Principal</NavLink>
+      <NavLink href="/admin/statistics" isMobile={isMobile}>Estadísticas</NavLink>
+      <NavLink href="/admin/user-management" isMobile={isMobile}>Gestión de Usuarios</NavLink>
+      <NavLink href="/grid" isMobile={isMobile}>Ver Parqueo</NavLink>
     </>
-  );
-};
+);
+
+const UserNavLinks = ({ isMobile }: { isMobile?: boolean }) => (
+    <>
+      <NavLink href="/grid" isMobile={isMobile}>Lugares Disponibles</NavLink>
+      <NavLink href="/my-account" isMobile={isMobile}>Mi Cuenta</NavLink>
+      <NavLink href="/history" isMobile={isMobile}>Historial de Uso</NavLink>
+    </>
+);
 
 
 export default function Header() {
-  const { userRole } = useUserRole();
+  const { userRole, setUserRole } = useUserRole();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
   const isAdmin = userRole === 'admin';
+
+  const handleLogout = async () => {
+    try {
+        if (auth) {
+            await signOut(auth);
+        }
+        setUserRole(null);
+        toast({
+            title: "Sesión cerrada",
+            description: "Has cerrado sesión correctamente.",
+        });
+        router.push('/');
+        router.refresh();
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+        });
+    }
+  };
+
 
   const getLogoLink = () => {
     return isAdmin ? '/admin' : '/grid';
@@ -55,14 +103,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
+      <div className="container flex h-16 items-center">
         {/* Desktop Menu */}
         <div className="mr-4 hidden md:flex">
           <Link href={getLogoLink()} className="mr-6 flex items-center space-x-2">
             <Logo className="h-8 w-8" />
             <span className="font-bold font-headline sm:inline-block">PUMG</span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
+          <nav className="flex items-center space-x-2 text-sm font-medium">
             {isAdmin ? <AdminNavLinks /> : <UserNavLinks />}
           </nav>
         </div>
@@ -81,16 +129,29 @@ export default function Header() {
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
-                    <nav className="grid gap-6 text-lg font-medium mt-8">
+                    <Link href={getLogoLink()} className="flex items-center space-x-2 mb-8">
+                        <Logo className="h-8 w-8" />
+                        <span className="font-bold font-headline text-lg">PUMG</span>
+                    </Link>
+                    <nav className="grid gap-4 text-lg font-medium">
                        {isAdmin ? <AdminNavLinks isMobile /> : <UserNavLinks isMobile />}
                     </nav>
+                    <SheetClose asChild>
+                        <Button onClick={handleLogout} variant="outline" className="absolute bottom-8 left-6 right-6">
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Cerrar Sesión
+                        </Button>
+                    </SheetClose>
                 </SheetContent>
             </Sheet>
         </div>
 
         <div className="hidden flex-1 items-center justify-end space-x-4 md:flex">
-          <Button asChild variant="outline">
-            <Link href="/">Cerrar Sesión</Link>
+          <Button onClick={handleLogout} asChild variant="outline">
+            <Link href="#">
+              <LogOut className="mr-2 h-4 w-4" />
+              Cerrar Sesión
+            </Link>
           </Button>
         </div>
       </div>
