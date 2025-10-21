@@ -9,7 +9,7 @@ To get started, take a look at src/app/page.tsx.
 El sistema está configurado para permitir un número fijo de plazas de aparcamiento.
 
 ### Cambiar las plazas permitidas
-Para modificar las plazas de aparcamiento permitidas, debes actualizar la variable de entorno `NEXT_PUBLIC_ALLOWED_SPOTS_JSON` en tu entorno de despliegue. Esta variable debe contener un array JSON de strings, por ejemplo: `NEXT_PUBLIC_ALLOWED_SPOTS_JSON='["A1","A2","A3","B1","B2","B3"]'`.
+Para modificar las plazas de aparcamiento permitidas, debes actualizar la variable de entorno `NEXT_PUBLIC_ALLOWED_SPOTS_JSON` en tu entorno de despliegue. Esta variable debe contener un array JSON de strings, por ejemplo: `NEXT_PUBLIC_ALLOWED_SPOTS_JSON='["P1","P2","P3","P4"]'`.
 
 ### Reiniciar y sembrar plazas
 Después de un despliegue, o si necesitas restaurar las plazas a su estado inicial, puedes usar los siguientes comandos:
@@ -50,7 +50,7 @@ Para que un dispositivo externo (como un ESP32) pueda actualizar el estado de la
     *   **Body (JSON):**
         ```json
         {
-          "spotId": "A1",
+          "spotId": "P1",
           "status": "occupied"
         }
         ```
@@ -101,11 +101,11 @@ void updateSpotStatus(String spotId, String status) {
 
 void loop() {
   // Lógica de tu sensor aquí...
-  // Si detectas un coche en la plaza "A1":
-  // updateSpotStatus("A1", "occupied");
+  // Si detectas un coche en la plaza "P1":
+  // updateSpotStatus("P1", "occupied");
 
-  // Si la plaza "A1" queda libre:
-  // updateSpotStatus("A1", "available");
+  // Si la plaza "P1" queda libre:
+  // updateSpotStatus("P1", "available");
   
   delay(10000); // Esperar 10 segundos
 }
