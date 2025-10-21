@@ -45,7 +45,7 @@ export default function LoginForm() {
   };
 
   return (
-      <Card className="w-full bg-card/90 backdrop-blur-lg border-border/40">
+      <Card className="w-full">
         <CardHeader className="text-center">
             <Bot className="mx-auto h-10 w-10 text-primary mb-2" />
           <CardTitle className="text-2xl font-headline">Bienvenido a PUMG</CardTitle>
