@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Bot } from "lucide-react"
+import { Logo } from "@/components/logo"
 import { useToast } from "@/hooks/use-toast";
 import React from "react";
 
@@ -47,7 +47,7 @@ export default function LoginForm() {
   return (
       <Card className="w-full">
         <CardHeader className="text-center">
-            <Bot className="mx-auto h-10 w-10 text-primary mb-2" />
+            <Logo className="mx-auto h-16 w-16 mb-2" />
           <CardTitle className="text-2xl font-headline">Bienvenido a PUMG</CardTitle>
           <CardDescription>
             Inicia sesión para gestionar el aparcamiento
@@ -84,7 +84,7 @@ export default function LoginForm() {
           </form>
           <div className="mt-4 text-center text-sm">
             ¿No tienes una cuenta?{" "}
-            <Link href="#" className="underline">
+            <Link href="/signup" className="underline">
               Regístrate
             </Link>
           </div>
