@@ -1,20 +1,18 @@
 // Autor: Antonio SJ
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, deleteDoc } from 'firebase/firestore';
+import 'dotenv/config';
 
 // Este script requiere que las credenciales de Firebase estén configuradas en el entorno.
-// Por ejemplo, a través de `gcloud auth application-default login`.
-
-const firebaseConfig = {
-    // Aquí deberías colocar la configuración de tu proyecto de Firebase
-    // projectId: "YOUR_PROJECT_ID",
-    // apiKey: "YOUR_API_KEY",
-    // etc.
-    // Por ahora, se asume que el entorno está configurado para conectarse.
-};
+const firebaseConfig = JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}');
 
 async function main() {
-    console.log('Iniciando el reseteo de plazas...');
+    if (!firebaseConfig.projectId) {
+        console.error('Error: La configuración de Firebase no está disponible. Asegúrate de que NEXT_PUBLIC_FIREBASE_CONFIG está en tu entorno.');
+        process.exit(1);
+    }
+
+    console.log(`Iniciando el reseteo de plazas para el proyecto: ${firebaseConfig.projectId}...`);
     
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -23,7 +21,8 @@ async function main() {
     const snapshot = await getDocs(spotsCollection);
     if (snapshot.empty) {
         console.log('No hay plazas para eliminar.');
-        return;
+        // Forzar la salida exitosa para terminar el proceso de node
+        process.exit(0);
     }
     
     const deletePromises: Promise<void>[] = [];
@@ -34,6 +33,8 @@ async function main() {
 
     await Promise.all(deletePromises);
     console.log(`Reseteo completado. ${snapshot.size} plazas eliminadas.`);
+    // Forzar la salida exitosa para terminar el proceso de node
+    process.exit(0);
 }
 
 main().catch(error => {

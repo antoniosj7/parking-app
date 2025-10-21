@@ -1,22 +1,25 @@
 // Autor: Antonio SJ
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import 'dotenv/config';
 
-const firebaseConfig = {
-     // Aquí deberías colocar la configuración de tu proyecto de Firebase
-};
+const firebaseConfig = JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}');
 
 let ALLOWED_SPOTS: string[];
 try {
-    ALLOWED_SPOTS = JSON.parse(process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["P1","P2","P3","P4"]');
+    const jsonString = process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["P1","P2","P3","P4"]';
+    ALLOWED_SPOTS = JSON.parse(jsonString);
 } catch (e) {
     console.error("Error parsing NEXT_PUBLIC_ALLOWED_SPOTS_JSON, using default spots.", e);
     ALLOWED_SPOTS = ["P1", "P2", "P3", "P4"];
 }
 
-
 async function main() {
-    console.log('Iniciando la siembra de plazas...');
+    if (!firebaseConfig.projectId) {
+        console.error('Error: La configuración de Firebase no está disponible. Asegúrate de que NEXT_PUBLIC_FIREBASE_CONFIG está en tu entorno.');
+        process.exit(1);
+    }
+    console.log(`Iniciando la siembra de plazas para el proyecto: ${firebaseConfig.projectId}...`);
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -38,6 +41,8 @@ async function main() {
 
     await Promise.all(seedPromises);
     console.log(`Siembra completada. ${ALLOWED_SPOTS.length} plazas creadas.`);
+    // Forzar la salida exitosa para terminar el proceso de node
+    process.exit(0);
 }
 
 main().catch(error => {
