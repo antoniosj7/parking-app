@@ -18,6 +18,9 @@ let firestore: Firestore;
 // This initializes Firebase on the client side.
 function initializeFirebase() {
   if (getApps().length === 0) {
+    if (!firebaseConfig.projectId) {
+      console.error("Firebase config is not available.");
+    }
     firebaseApp = initializeApp(firebaseConfig);
     auth = getAuth(firebaseApp);
     firestore = getFirestore(firebaseApp);

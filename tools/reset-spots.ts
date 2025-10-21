@@ -4,11 +4,18 @@ import { getFirestore, collection, getDocs, deleteDoc } from 'firebase/firestore
 import 'dotenv/config';
 
 // Este script requiere que las credenciales de Firebase estén configuradas en el entorno.
-const firebaseConfig = JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}');
+const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
 
 async function main() {
-    if (!firebaseConfig.projectId) {
+    if (!firebaseConfigStr) {
         console.error('Error: La configuración de Firebase no está disponible. Asegúrate de que NEXT_PUBLIC_FIREBASE_CONFIG está en tu entorno.');
+        process.exit(1);
+    }
+    
+    const firebaseConfig = JSON.parse(firebaseConfigStr);
+
+    if (!firebaseConfig.projectId) {
+        console.error('Error: El projectId de Firebase no está en la configuración.');
         process.exit(1);
     }
 

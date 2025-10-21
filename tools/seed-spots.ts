@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import 'dotenv/config';
 
-const firebaseConfig = JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}');
+const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
 
 let ALLOWED_SPOTS: string[];
 try {
@@ -15,8 +15,14 @@ try {
 }
 
 async function main() {
-    if (!firebaseConfig.projectId) {
+    if (!firebaseConfigStr) {
         console.error('Error: La configuración de Firebase no está disponible. Asegúrate de que NEXT_PUBLIC_FIREBASE_CONFIG está en tu entorno.');
+        process.exit(1);
+    }
+    const firebaseConfig = JSON.parse(firebaseConfigStr);
+
+    if (!firebaseConfig.projectId) {
+        console.error('Error: El projectId de Firebase no está en la configuración.');
         process.exit(1);
     }
     console.log(`Iniciando la siembra de plazas para el proyecto: ${firebaseConfig.projectId}...`);
