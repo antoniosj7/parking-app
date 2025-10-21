@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { UserRoleProvider } from '@/context/user-role-context';
-import MainNav from '@/components/main-nav';
+import AuthLayout from '@/components/auth-layout';
 
 export const metadata: Metadata = {
   title: 'PUMG - Parrilla Universal de Gestión de Aparcamiento',
@@ -16,10 +16,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Verificamos el nombre del componente de la página para decidir si mostrar el menú.
-  // Las páginas de Login y Signup tienen nombres específicos que podemos comprobar.
-  const pageName = (children as any)?.props?.child?.type?.name;
-  const showNav = pageName !== 'LoginPage' && pageName !== 'SignupPage';
 
   return (
     <html lang="es" suppressHydrationWarning>
@@ -31,14 +27,9 @@ export default function RootLayout({
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
         <UserRoleProvider>
           <FirebaseClientProvider>
-            {showNav ? (
-              <div className="main-layout" id="main-layout">
-                <MainNav />
-                <main className="flex-1 overflow-auto">{children}</main>
-              </div>
-            ) : (
-              children
-            )}
+            <AuthLayout>
+                {children}
+            </AuthLayout>
             <Toaster />
           </FirebaseClientProvider>
         </UserRoleProvider>
