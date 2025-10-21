@@ -6,7 +6,14 @@ const firebaseConfig = {
      // Aquí deberías colocar la configuración de tu proyecto de Firebase
 };
 
-const ALLOWED_SPOTS = ["A1", "A2", "B1", "B2"];
+let ALLOWED_SPOTS: string[];
+try {
+    ALLOWED_SPOTS = JSON.parse(process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["A1","A2","B1","B2"]');
+} catch (e) {
+    console.error("Error parsing NEXT_PUBLIC_ALLOWED_SPOTS_JSON, using default spots.", e);
+    ALLOWED_SPOTS = ["A1", "A2", "B1", "B2"];
+}
+
 
 async function main() {
     console.log('Iniciando la siembra de plazas...');
@@ -21,7 +28,7 @@ async function main() {
         const spotRef = doc(spotsCollection, spotId);
         const spotData = {
             id: spotId,
-            occupied: false,
+            status: 'available', // Se inicializa como 'available'
             lastChangeAt: serverTimestamp(),
             currentSessionId: null
         };
