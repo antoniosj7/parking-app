@@ -16,7 +16,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isLoginPage = (children as any)?.type.name === 'LoginPage' || (children as any)?.props?.child?.type.name === 'LoginPage';
+  // Verificamos el nombre del componente de la página para decidir si mostrar el menú.
+  // Las páginas de Login y Signup tienen nombres específicos que podemos comprobar.
+  const pageName = (children as any)?.props?.child?.type?.name;
+  const showNav = pageName !== 'LoginPage' && pageName !== 'SignupPage';
 
   return (
     <html lang="es" suppressHydrationWarning>
@@ -28,13 +31,13 @@ export default function RootLayout({
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
         <UserRoleProvider>
           <FirebaseClientProvider>
-            {isLoginPage ? (
-              children
-            ) : (
+            {showNav ? (
               <div className="main-layout" id="main-layout">
                 <MainNav />
                 <main className="flex-1 overflow-auto">{children}</main>
               </div>
+            ) : (
+              children
             )}
             <Toaster />
           </FirebaseClientProvider>
