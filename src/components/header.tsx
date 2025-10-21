@@ -1,9 +1,8 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Logo } from './logo';
 import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
+import { useUserRole } from '@/context/user-role-context';
 
 const AdminNav = () => (
   <nav className="hidden items-center gap-4 text-sm lg:flex lg:gap-6">
@@ -59,14 +58,11 @@ const UserNav = () => (
 
 
 export default function Header() {
-  const pathname = usePathname();
-  // El menú de admin solo se muestra en las rutas /admin/*
-  const isAdminPath = pathname.startsWith('/admin');
+  const { userRole } = useUserRole();
+  const isAdmin = userRole === 'admin';
 
   const getLogoLink = () => {
-    // Si estamos en una ruta de admin, el logo lleva a /admin.
-    // Si no, lleva a /grid, la página principal del usuario.
-    return isAdminPath ? '/admin' : '/grid';
+    return isAdmin ? '/admin' : '/grid';
   }
 
   return (
@@ -79,7 +75,7 @@ export default function Header() {
           </span>
         </Link>
         
-        {isAdminPath ? <AdminNav /> : <UserNav />}
+        {isAdmin ? <AdminNav /> : <UserNav />}
 
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
