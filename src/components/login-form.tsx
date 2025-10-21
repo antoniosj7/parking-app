@@ -41,7 +41,6 @@ export default function LoginForm() {
             description: "Bienvenido, admin. Redirigiendo al panel...",
         });
         router.push('/admin');
-        setLoading(false);
         return;
     }
 
@@ -99,7 +98,7 @@ export default function LoginForm() {
                 name="email"
                 type="text"
                 autoComplete="email"
-                placeholder="tu@correo.com"
+                placeholder="tu@correo.com o admin@pumg.com"
                 required
                 disabled={loading}
                 value={email}
