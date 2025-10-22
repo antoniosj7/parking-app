@@ -1,6 +1,5 @@
 'use client';
 import { useUser } from '@/firebase';
-import MainNav from '@/components/main-nav';
 import Loading from '@/app/loading';
 import Header from '@/components/header';
 
