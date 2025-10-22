@@ -10,15 +10,20 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
-    const collapsedState = localStorage.getItem('nav-collapsed') === 'true';
-    setIsCollapsed(collapsedState);
+    // Solo se ejecuta en el cliente
+    if (typeof window !== 'undefined') {
+        const collapsedState = localStorage.getItem('nav-collapsed') === 'true';
+        setIsCollapsed(collapsedState);
+    }
   }, []);
 
 
   const toggleCollapse = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
-    localStorage.setItem('nav-collapsed', String(newState));
+     if (typeof window !== 'undefined') {
+        localStorage.setItem('nav-collapsed', String(newState));
+    }
   };
   
   if (loading) {
@@ -27,11 +32,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   
   // Si no hay usuario (y no estamos cargando), es una página pública (login/signup)
   if (!user) {
-    // Renderiza solo el contenido de la página, sin el layout principal de navegación.
+    // Renderiza solo el contenido de la página, sin el diseño de navegación principal.
     return <>{children}</>;
   }
 
-  // Si hay usuario, mostramos el layout principal con el menú de navegación.
+  // Si hay un usuario, muestra el diseño principal con el menú de navegación.
   return (
     <div className="main-layout" data-collapsed={isCollapsed}>
       <MainNav isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />

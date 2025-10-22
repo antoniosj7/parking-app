@@ -99,7 +99,8 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
         description: "Has cerrado sesión correctamente.",
       });
       router.push('/');
-      router.refresh();
+      // Forzar un refresco de la página al redirigir para asegurar que el estado de autenticación se actualiza
+      router.refresh(); 
     } catch (error) {
       toast({
         variant: "destructive",
