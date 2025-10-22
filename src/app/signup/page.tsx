@@ -52,10 +52,11 @@ export default function SignupPage() {
 
       toast({
         title: "¡Cuenta creada con éxito!",
-        description: `Bienvenido, ${firstName}. Redirigiendo a la parrilla...`,
+        description: `Bienvenido, ${firstName}. Serás redirigido para iniciar sesión.`,
       });
-
-      router.push('/grid');
+      
+      // Redirige a la página principal. El AuthLayout se encargará de llevarlo a la vista correcta.
+      router.push('/');
       router.refresh();
 
     } catch (error: any) {
