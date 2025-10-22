@@ -38,6 +38,7 @@ async function main() {
         const spotData = {
             id: spotId,
             status: 'available', // Se inicializa como 'available'
+            occupied: false,
             lastChangeAt: serverTimestamp(),
             currentSessionId: null
         };

@@ -1,4 +1,5 @@
 'use client';
+// Antonio SJ
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Clock, Car, CircleDollarSign } from "lucide-react";
 import { useUser, useCollection } from "@/firebase";
@@ -17,7 +18,7 @@ export default function MyAccountPage() {
   const activeSessionQuery = user && firestore
     ? query(
         collection(firestore, 'sessions'),
-        where('user', '==', user.displayName || 'usuario1'), // Fallback for mocked user
+        where('userId', '==', user.uid), // Usar UID es más seguro
         where('status', '==', 'active')
       )
     : null;

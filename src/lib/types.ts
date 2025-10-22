@@ -1,3 +1,5 @@
+'use client';
+// Antonio SJ
 import type { Timestamp } from 'firebase/firestore';
 
 export type ParkingSpotStatus = 'available' | 'occupied' | 'reserved';
@@ -16,9 +18,10 @@ export type ParkingSession = {
   id: string;
   spotId: string;
   user: string;
+  userId: string;
   startTime: Timestamp;
   endTime?: Timestamp;
-  duration: string;
+  duration?: string;
   status: 'active' | 'completed';
 };
 

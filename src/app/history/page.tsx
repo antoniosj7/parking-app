@@ -26,7 +26,7 @@ export default function HistoryPage() {
   const sessionsQuery = user && firestore
     ? query(
         collection(firestore, 'sessions'), 
-        where('user', '==', user.displayName || 'usuario1'), // Fallback for mocked user
+        where('userId', '==', user.uid), // Antonio SJ: Usar UID es más seguro y fiable
         orderBy('startTime', 'desc')
       )
     : null;
