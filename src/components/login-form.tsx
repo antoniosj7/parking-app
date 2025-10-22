@@ -21,12 +21,6 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type U
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
 
-// Antonio SJ: Usuarios de prueba locales que solo funcionan en desarrollo.
-const DEV_USERS = {
-  'admin@pumg.com': { role: 'admin', displayName: 'Admin de Desarrollo' },
-  'user@pumg.com': { role: 'user', displayName: 'Usuario de Desarrollo' }
-};
-
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
@@ -47,17 +41,6 @@ export default function LoginForm() {
         description: `Bienvenido, ${user.displayName || 'usuario'}. Redirigiendo...`,
     });
 
-    const targetPath = role === 'admin' ? '/admin' : '/grid';
-    router.push(targetPath);
-    router.refresh();
-  };
-
-  const handleDevLogin = (role: 'admin' | 'user', displayName: string) => {
-    setUserRole(role);
-    toast({
-      title: "Login de desarrollo exitoso",
-      description: `Bienvenido, ${displayName}. Redirigiendo...`,
-    });
     const targetPath = role === 'admin' ? '/admin' : '/grid';
     router.push(targetPath);
     router.refresh();
@@ -92,16 +75,6 @@ export default function LoginForm() {
     event.preventDefault();
     setLoading(true);
 
-    // Antonio SJ: Lógica de usuarios de prueba solo en modo desarrollo.
-    if (process.env.NODE_ENV === 'development') {
-      const devUser = DEV_USERS[email as keyof typeof DEV_USERS];
-      if (devUser && password === devUser.role) {
-        handleDevLogin(devUser.role as 'admin' | 'user', devUser.displayName);
-        setLoading(false);
-        return;
-      }
-    }
-    
     if (!auth) {
         toast({
             variant: "destructive",

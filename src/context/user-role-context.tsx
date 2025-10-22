@@ -13,12 +13,6 @@ interface UserRoleContextType {
 
 const UserRoleContext = createContext<UserRoleContextType | undefined>(undefined);
 
-// Antonio SJ: Usuarios de prueba locales para desarrollo
-const DEV_USERS = {
-  'admin@pumg.com': { role: 'admin' },
-  'user@pumg.com': { role: 'user' }
-};
-
 export function UserRoleProvider({ children }: { children: ReactNode }) {
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,17 +25,7 @@ export function UserRoleProvider({ children }: { children: ReactNode }) {
     }
     
     if (user) {
-      // Antonio SJ: En desarrollo, si es un usuario de prueba, asigna el rol localmente.
-      if (process.env.NODE_ENV === 'development') {
-          const devUser = DEV_USERS[user.email as keyof typeof DEV_USERS];
-          if (devUser) {
-              setUserRole(devUser.role as UserRole);
-              setIsLoading(false);
-              return;
-          }
-      }
-
-      // Antonio SJ: Para usuarios reales, obtener el rol del token de Firebase.
+      // Para usuarios reales, obtener el rol del token de Firebase.
       user.getIdTokenResult().then((idTokenResult) => {
         const role = (idTokenResult.claims.role as string) || 'user';
         setUserRole(role as UserRole);
@@ -57,14 +41,8 @@ export function UserRoleProvider({ children }: { children: ReactNode }) {
     }
   }, [user, userLoading]);
 
-  // Si el rol está siendo seteado por una fuente externa (como el dev login)
-  const setRoleDirectly = (role: UserRole) => {
-    setUserRole(role);
-    setIsLoading(false);
-  }
-
   return (
-    <UserRoleContext.Provider value={{ userRole, setUserRole: setRoleDirectly, isLoading }}>
+    <UserRoleContext.Provider value={{ userRole, setUserRole, isLoading }}>
       {children}
     </UserRoleContext.Provider>
   );
