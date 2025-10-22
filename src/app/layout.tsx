@@ -27,9 +27,11 @@ export default function RootLayout({
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
         <UserRoleProvider>
           <FirebaseClientProvider>
-            <AuthLayout>
-                {children}
-            </AuthLayout>
+            <div className="relative flex min-h-screen flex-col">
+              <AuthLayout>
+                  {children}
+              </AuthLayout>
+            </div>
             <Toaster />
           </FirebaseClientProvider>
         </UserRoleProvider>

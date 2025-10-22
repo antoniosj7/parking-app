@@ -1,4 +1,3 @@
-
 'use client';
 import Link from "next/link"
 import { useRouter } from 'next/navigation';
@@ -70,17 +69,6 @@ export default function LoginForm() {
     event.preventDefault();
     setLoading(true);
 
-    if (email.toLowerCase() === 'admin' && password === 'admin123') {
-        setUserRole('admin');
-        toast({
-            title: "Login de Administrador exitoso",
-            description: "Bienvenido, admin. Redirigiendo al panel...",
-        });
-        router.push('/admin');
-        router.refresh();
-        return;
-    }
-
     if (!auth) {
         toast({
             variant: "destructive",
@@ -122,7 +110,7 @@ export default function LoginForm() {
   };
 
   return (
-      <Card className="w-full shadow-2xl shadow-primary/10">
+      <Card className="w-full shadow-2xl shadow-primary/10 border-border/50 bg-card/80 backdrop-blur-lg">
         <CardHeader className="text-center">
             <Logo className="mx-auto h-12 w-12 mb-4" />
           <CardTitle className="text-3xl font-headline">Bienvenido a PUMG</CardTitle>

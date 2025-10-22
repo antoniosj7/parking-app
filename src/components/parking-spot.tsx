@@ -4,7 +4,7 @@
 import type { ParkingSpot as ParkingSpotType } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Car, Ban, Clock, AlertTriangle, ParkingCircle, CheckCircle } from 'lucide-react';
+import { Car, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -17,17 +17,20 @@ const statusConfig = {
   available: {
     label: 'Disponible',
     icon: <CheckCircle className="h-10 w-10" />,
-    action: <Button size="sm" className="w-full">Reservar</Button>
+    action: <Button size="sm" className="w-full">Reservar</Button>,
+    className: 'border-green-500/40 hover:bg-green-500/5 dark:hover:bg-green-500/10'
   },
   occupied: {
     label: 'Ocupado',
     icon: <Car className="h-10 w-10" />,
-    action: null
+    action: null,
+    className: 'border-red-500/40 hover:bg-red-500/5 dark:hover:bg-red-500/10'
   },
   reserved: {
     label: 'Reservado',
     icon: <Clock className="h-10 w-10" />,
-    action: null
+    action: null,
+    className: 'border-yellow-500/40 hover:bg-yellow-500/5 dark:hover:bg-yellow-500/10'
   },
 };
 
@@ -63,7 +66,11 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
     <Card
       data-status={spot.status}
       className={cn(
-        'spot-card flex flex-col items-center justify-between text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 cursor-pointer'
+        'spot-card flex flex-col items-center justify-between text-center transition-all duration-300',
+        'bg-card/60 backdrop-blur-sm',
+        'hover:shadow-xl hover:-translate-y-1',
+        'cursor-pointer',
+        config.className
       )}
     >
       <CardHeader className="p-4 pb-2">
