@@ -1,3 +1,4 @@
+
 'use client';
 import Link from "next/link"
 import { useRouter } from 'next/navigation';
@@ -19,6 +20,7 @@ import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useAuth } from "@/firebase";
+import { Separator } from "./ui/separator";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -120,15 +122,30 @@ export default function LoginForm() {
   };
 
   return (
-      <Card className="w-full">
+      <Card className="w-full shadow-2xl shadow-primary/10">
         <CardHeader className="text-center">
-            <Logo className="mx-auto h-16 w-16 mb-2" />
-          <CardTitle className="text-2xl font-headline">Bienvenido a PUMG</CardTitle>
+            <Logo className="mx-auto h-12 w-12 mb-4" />
+          <CardTitle className="text-3xl font-headline">Bienvenido a PUMG</CardTitle>
           <CardDescription>
             Inicia sesión para gestionar el aparcamiento
           </CardDescription>
         </CardHeader>
         <CardContent>
+            <div className="grid gap-4">
+              <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn} disabled={loading || googleLoading}>
+                {googleLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 177.2 56.4l-63.1 61.9C338.4 99.8 298.4 87 248 87c-73.2 0-134.3 59.4-134.3 132.3s61.1 132.3 134.3 132.3c84.3 0 115.7-64.2 120.2-95.7H248v-65.8h239.2c1.2 12.8 2.3 26.7 2.3 41.8z"></path></svg>
+                )}
+                {googleLoading ? 'Iniciando...' : 'Continuar con Google'}
+              </Button>
+            </div>
+            <div className="my-4 flex items-center">
+              <Separator className="flex-1" />
+              <span className="mx-4 text-xs text-muted-foreground">O CONTINÚA CON</span>
+              <Separator className="flex-1" />
+            </div>
           <form className="grid gap-4" onSubmit={handleSubmit}>
             <div className="grid gap-2">
               <Label htmlFor="email">Usuario o Email</Label>
@@ -146,9 +163,6 @@ export default function LoginForm() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Contraseña</Label>
-                <Link href="#" className="ml-auto inline-block text-sm underline">
-                  ¿Olvidaste tu contraseña?
-                </Link>
               </div>
               <Input 
                 id="password" 
@@ -161,22 +175,14 @@ export default function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading || googleLoading}>
+            <Button type="submit" className="w-full mt-2" disabled={loading || googleLoading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
-            <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn} disabled={loading || googleLoading}>
-              {googleLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 177.2 56.4l-63.1 61.9C338.4 99.8 298.4 87 248 87c-73.2 0-134.3 59.4-134.3 132.3s61.1 132.3 134.3 132.3c84.3 0 115.7-64.2 120.2-95.7H248v-65.8h239.2c1.2 12.8 2.3 26.7 2.3 41.8z"></path></svg>
-              )}
-              {googleLoading ? 'Iniciando...' : 'Iniciar con Google'}
-            </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-6 text-center text-sm">
             ¿No tienes una cuenta?{" "}
-            <Link href="/signup" className="underline">
+            <Link href="/signup" className="underline font-semibold text-primary">
               Regístrate
             </Link>
           </div>

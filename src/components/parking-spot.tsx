@@ -4,7 +4,7 @@
 import type { ParkingSpot as ParkingSpotType } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Car, Ban, Clock, AlertTriangle, ParkingCircle } from 'lucide-react';
+import { Car, Ban, Clock, AlertTriangle, ParkingCircle, CheckCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -16,17 +16,17 @@ interface ParkingSpotProps {
 const statusConfig = {
   available: {
     label: 'Disponible',
-    icon: <Car className="h-8 w-8" />,
-    action: <Button size="sm">Reservar</Button>
+    icon: <CheckCircle className="h-10 w-10" />,
+    action: <Button size="sm" className="w-full">Reservar</Button>
   },
   occupied: {
     label: 'Ocupado',
-    icon: <Ban className="h-8 w-8" />,
+    icon: <Car className="h-10 w-10" />,
     action: null
   },
   reserved: {
     label: 'Reservado',
-    icon: <Clock className="h-8 w-8" />,
+    icon: <Clock className="h-10 w-10" />,
     action: null
   },
 };
@@ -46,13 +46,13 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
 
   if (isNotAllowed) {
     return (
-       <Card className="flex flex-col items-center justify-center text-center bg-gray-200 dark:bg-gray-800 border-gray-400 dark:border-gray-600">
+       <Card className="flex flex-col items-center justify-center text-center bg-muted/50 border-dashed">
         <CardHeader className="p-4">
-          <CardTitle className="font-headline text-2xl text-gray-600 dark:text-gray-400">{spot.id}</CardTitle>
+          <CardTitle className="font-headline text-2xl text-muted-foreground">{spot.id}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-2 p-4 pt-0">
-          <AlertTriangle className="h-8 w-8 text-gray-500" />
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">No Permitido</p>
+          <AlertTriangle className="h-8 w-8 text-muted-foreground" />
+          <p className="text-sm font-medium text-muted-foreground">No Permitido</p>
           <p className="text-xs text-muted-foreground">(Oculto en {countdown}s)</p>
         </CardContent>
       </Card>
@@ -63,23 +63,24 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
     <Card
       data-status={spot.status}
       className={cn(
-        'flex flex-col items-center justify-between text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
-        'spot-card' 
+        'spot-card flex flex-col items-center justify-between text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 cursor-pointer'
       )}
     >
-      <CardHeader className="p-4">
-        <CardTitle className={cn('font-headline text-2xl spot-title')}>
+      <CardHeader className="p-4 pb-2">
+        <CardTitle className={cn('font-headline text-3xl spot-title')}>
           {spot.id}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-2 p-4 pt-0">
-        <div className="spot-icon">{config.icon}</div>
-        <p className="text-sm font-medium">{config.label}</p>
+        <div className="spot-icon my-2">{config.icon}</div>
+        <p className="text-base font-semibold">{config.label}</p>
         {spot.user && <p className="text-xs text-muted-foreground">Usuario: {spot.user}</p>}
       </CardContent>
-      <CardFooter className="p-2 w-full">
-         {config.action}
-      </CardFooter>
+       {config.action && 
+        <CardFooter className="p-3 w-full">
+            {config.action}
+        </CardFooter>
+      }
     </Card>
   );
 }

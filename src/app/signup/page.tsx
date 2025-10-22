@@ -47,7 +47,6 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Actualizar el perfil del usuario con su nombre
       await updateProfile(user, {
         displayName: `${firstName} ${lastName}`.trim(),
       });
@@ -57,7 +56,6 @@ export default function SignupPage() {
         description: `Bienvenido, ${firstName}. Redirigiendo a la parrilla...`,
       });
 
-      // Forzar un refresco de la página al redirigir para asegurar que el estado de autenticación se actualiza
       router.push('/grid');
       router.refresh();
 
@@ -83,76 +81,79 @@ export default function SignupPage() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12 px-4">
-      <Card className="mx-auto max-w-sm w-full">
-        <CardHeader className="text-center">
-          <Logo className="mx-auto h-10 w-10 mb-2" />
-          <CardTitle className="text-2xl font-headline">Crear una Cuenta</CardTitle>
-          <CardDescription>
-            Introduce tu información para crear una cuenta en PUMG
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="grid gap-4" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-background p-4 overflow-hidden">
+       <div className="absolute inset-0 z-0 bg-gradient-to-br from-background to-blue-50/50 dark:to-blue-950/20"></div>
+       <div className="w-full max-w-md z-10">
+        <Card className="mx-auto w-full">
+          <CardHeader className="text-center">
+            <Logo className="mx-auto h-10 w-10 mb-4" />
+            <CardTitle className="text-2xl font-headline">Crear una Cuenta</CardTitle>
+            <CardDescription>
+              Introduce tu información para unirte a PUMG
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="grid gap-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="first-name">Nombre</Label>
+                  <Input 
+                    id="first-name" 
+                    placeholder="Juan" 
+                    required 
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="last-name">Apellidos</Label>
+                  <Input 
+                    id="last-name" 
+                    placeholder="Pérez" 
+                    required 
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
               <div className="grid gap-2">
-                <Label htmlFor="first-name">Nombre</Label>
-                <Input 
-                  id="first-name" 
-                  placeholder="Juan" 
-                  required 
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                <Label htmlFor="email">Correo Electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@ejemplo.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="last-name">Apellidos</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input 
-                  id="last-name" 
-                  placeholder="Pérez" 
-                  required 
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  id="password" 
+                  type="password" 
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
                 />
               </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+              </Button>
+            </form>
+            <div className="mt-4 text-center text-sm">
+              ¿Ya tienes una cuenta?{" "}
+              <Link href="/" className="underline font-semibold text-primary">
+                Iniciar sesión
+              </Link>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@ejemplo.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creando cuenta...' : 'Crear cuenta'}
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            ¿Ya tienes una cuenta?{" "}
-            <Link href="/" className="underline">
-              Iniciar sesión
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

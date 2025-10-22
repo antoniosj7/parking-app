@@ -4,54 +4,54 @@
 
 @layer base {
   :root {
-    --background: 199 75% 91%;
-    --foreground: 227 30% 20%;
-    --card: 0 0% 100%;
-    --card-foreground: 227 30% 20%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 227 30% 20%;
-    --primary: 227 89% 29%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 264 94% 37%;
-    --accent-foreground: 0 0% 98%;
+    --background: 210 40% 98%;
+    --foreground: 222 84% 4.9%;
+    --card: 210 40% 98%;
+    --card-foreground: 222 84% 4.9%;
+    --popover: 210 40% 98%;
+    --popover-foreground: 222 84% 4.9%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 227 89% 29%;
-    --chart-1: 227 89% 29%;
-    --chart-2: 264 94% 37%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+    --chart-1: 221 83% 53%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
     --radius: 0.5rem;
   }
   .dark {
-    --background: 227 20% 10%;
-    --foreground: 199 30% 85%;
-    --card: 227 20% 12%;
-    --card-foreground: 199 30% 85%;
-    --popover: 227 20% 12%;
-    --popover-foreground: 199 30% 85%;
-    --primary: 199 75% 91%;
-    --primary-foreground: 227 20% 10%;
-    --secondary: 227 20% 17%;
-    --secondary-foreground: 199 30% 85%;
-    --muted: 227 20% 17%;
-    --muted-foreground: 199 20% 60%;
-    --accent: 264 80% 60%;
-    --accent-foreground: 227 20% 10%;
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47.4% 11.2%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 227 20% 17%;
-    --input: 227 20% 17%;
-    --ring: 264 80% 60%;
-    --chart-1: 199 75% 91%;
-    --chart-2: 264 80% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
@@ -83,51 +83,50 @@
   }
 }
 
-
 .spot-card[data-status='available'] {
-  @apply bg-green-50 border-green-200;
+    @apply bg-green-500/10 border-green-500/30;
 }
 .spot-card[data-status='available'] .spot-title,
 .spot-card[data-status='available'] .spot-icon {
-  @apply text-green-600;
+    @apply text-green-500;
 }
 
 .spot-card[data-status='occupied'] {
-  @apply bg-red-50 border-red-200;
+    @apply bg-red-500/10 border-red-500/30;
 }
 .spot-card[data-status='occupied'] .spot-title,
 .spot-card[data-status='occupied'] .spot-icon {
-  @apply text-red-600;
+    @apply text-red-500;
 }
 
 .spot-card[data-status='reserved'] {
-  @apply bg-yellow-50 border-yellow-200;
+    @apply bg-yellow-500/10 border-yellow-500/30;
 }
 .spot-card[data-status='reserved'] .spot-title,
 .spot-card[data-status='reserved'] .spot-icon {
-  @apply text-yellow-600;
+    @apply text-yellow-500;
 }
 
 .dark .spot-card[data-status='available'] {
-  @apply bg-green-950/50 border-green-800;
+    @apply bg-green-500/10 border-green-500/20;
 }
 .dark .spot-card[data-status='available'] .spot-title,
 .dark .spot-card[data-status='available'] .spot-icon {
-  @apply text-green-400;
+    @apply text-green-400;
 }
 
 .dark .spot-card[data-status='occupied'] {
-  @apply bg-red-950/50 border-red-800;
+    @apply bg-red-500/10 border-red-500/20;
 }
 .dark .spot-card[data-status='occupied'] .spot-title,
 .dark .spot-card[data-status='occupied'] .spot-icon {
-  @apply text-red-400;
+    @apply text-red-400;
 }
 
 .dark .spot-card[data-status='reserved'] {
-  @apply bg-yellow-950/50 border-yellow-800;
+    @apply bg-yellow-500/10 border-yellow-500/20;
 }
 .dark .spot-card[data-status='reserved'] .spot-title,
 .dark .spot-card[data-status='reserved'] .spot-icon {
-  @apply text-yellow-400;
+    @apply text-yellow-400;
 }

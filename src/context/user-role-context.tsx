@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useUser } from '@/firebase';
 
 type UserRole = 'admin' | 'user' | null;
 
@@ -13,6 +14,22 @@ const UserRoleContext = createContext<UserRoleContextType | undefined>(undefined
 
 export function UserRoleProvider({ children }: { children: ReactNode }) {
   const [userRole, setUserRole] = useState<UserRole>(null);
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      // Recuperar el rol del token de Firebase para persistirlo en refreshes
+      user.getIdTokenResult().then((idTokenResult) => {
+        const role = (idTokenResult.claims.role as string) || 'user';
+        setUserRole(role as UserRole);
+      }).catch((error) => {
+        console.error('Error obteniendo rol del token:', error);
+        setUserRole('user'); // Fallback a user
+      });
+    } else {
+      setUserRole(null);
+    }
+  }, [user]);
 
   return (
     <UserRoleContext.Provider value={{ userRole, setUserRole }}>

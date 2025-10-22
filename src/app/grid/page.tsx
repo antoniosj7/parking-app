@@ -2,10 +2,15 @@ import ParkingGrid from "@/components/parking-grid";
 
 export default function GridPage() {
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <h1 className="mb-8 text-center font-headline text-4xl font-bold tracking-tight md:text-5xl">
-        Parqueo en Tiempo Real
-      </h1>
+    <div className="flex-1 space-y-4">
+        <div className="flex items-center justify-between space-y-2 pb-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight font-headline">Parqueo en Tiempo Real</h2>
+            <p className="text-muted-foreground">
+              Selecciona una plaza disponible para ver más detalles.
+            </p>
+          </div>
+        </div>
       <ParkingGrid />
     </div>
   );

@@ -4,11 +4,14 @@ import { PlusCircle } from "lucide-react";
 
 export default function UserManagementPage() {
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between mb-8">
-            <h1 className="font-headline text-4xl font-bold tracking-tight md:text-5xl">
-                Gestión de Usuarios
-            </h1>
+    <div className="flex-1 space-y-8">
+        <div className="flex items-center justify-between">
+            <div>
+                <h2 className="text-3xl font-bold tracking-tight font-headline">Gestión de Usuarios</h2>
+                <p className="text-muted-foreground">
+                    Administra los usuarios y sus roles en el sistema.
+                </p>
+            </div>
             <Button>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Crear Nuevo Usuario
@@ -23,7 +26,7 @@ export default function UserManagementPage() {
             </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">[Aquí irá una tabla con la lista de usuarios, su rol, su historial de uso y opciones para editar o eliminar.]</p>
+          <p className="text-center py-10 text-muted-foreground">[Aquí irá una tabla con la lista de usuarios, su rol, su historial de uso y opciones para editar o eliminar.]</p>
         </CardContent>
       </Card>
     </div>

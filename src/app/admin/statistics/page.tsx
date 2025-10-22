@@ -1,19 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Clock } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { BarChart, Clock, CircleDollarSign } from "lucide-react";
+import OccupancyChart from "@/components/occupancy-chart";
 
 export default function StatisticsPage() {
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <h1 className="mb-8 font-headline text-4xl font-bold tracking-tight md:text-5xl">
-        Estadísticas del Parqueo
-      </h1>
+    <div className="flex-1 space-y-8">
+       <div>
+        <h2 className="text-3xl font-bold tracking-tight font-headline">Estadísticas del Parqueo</h2>
+        <p className="text-muted-foreground">
+          Análisis de ingresos, ocupación y tendencias.
+        </p>
+      </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Ingresos Totales (Hoy)
             </CardTitle>
-            <span className="h-4 w-4 text-muted-foreground font-bold">Q</span>
+            <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Q 1,250.50</div>
@@ -25,7 +29,7 @@ export default function StatisticsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Hora Pico
+              Hora Pico (Hoy)
             </CardTitle>
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -55,11 +59,10 @@ export default function StatisticsPage() {
          <Card>
             <CardHeader>
                 <CardTitle>Gráfico de Ocupación y Ganancias</CardTitle>
+                <CardDescription>Ocupación por hora de las últimas 12 horas.</CardDescription>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground">
-                    [Aquí irá un gráfico detallado con tiempos de uso, ganancias por hora, etc.]
-                </p>
+                <OccupancyChart />
             </CardContent>
          </Card>
        </div>

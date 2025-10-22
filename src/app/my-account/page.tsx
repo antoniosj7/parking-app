@@ -1,6 +1,6 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Clock } from "lucide-react";
+import { Clock, Car, CircleDollarSign } from "lucide-react";
 import { useUser, useCollection } from "@/firebase";
 import { collection, query, where, getFirestore } from 'firebase/firestore';
 import type { ParkingSession } from "@/lib/types";
@@ -51,34 +51,45 @@ export default function MyAccountPage() {
   }, [activeSession]);
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <h1 className="mb-8 font-headline text-4xl font-bold tracking-tight md:text-5xl">
-        Mi Cuenta
-      </h1>
-      <Card>
+    <div className="flex-1 space-y-8">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight font-headline">Mi Cuenta</h2>
+        <p className="text-muted-foreground">
+          Información de tu sesión de aparcamiento actual.
+        </p>
+      </div>
+
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle>Sesión de Aparcamiento Actual</CardTitle>
+          <CardTitle>Sesión de Aparcamiento Activa</CardTitle>
           <CardDescription>
             {loading 
               ? "Buscando sesión activa..." 
               : activeSession 
-              ? `Estacionado en la plaza ${activeSession.spotId}.`
-              : "No tienes ninguna sesión de aparcamiento activa."
+              ? `Estás estacionado en la plaza ${activeSession.spotId}.`
+              : "No tienes ninguna sesión de aparcamiento activa en este momento."
             }
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2">
-            <div className="flex items-center space-x-4 rounded-md border p-4">
+        <CardContent className="grid gap-6 md:grid-cols-3">
+            <div className="flex items-center space-x-4 rounded-lg border bg-card p-6">
+                <Car className="h-8 w-8 text-primary" />
+                <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium leading-none text-muted-foreground">Plaza Actual</p>
+                    <p className="text-2xl font-bold">{activeSession ? activeSession.spotId : '--'}</p>
+                </div>
+            </div>
+            <div className="flex items-center space-x-4 rounded-lg border bg-card p-6">
                 <Clock className="h-8 w-8 text-primary" />
                 <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium leading-none">Tiempo Transcurrido</p>
+                    <p className="text-sm font-medium leading-none text-muted-foreground">Tiempo Transcurrido</p>
                     <p className="text-2xl font-bold">{elapsedTime}</p>
                 </div>
             </div>
-            <div className="flex items-center space-x-4 rounded-md border p-4">
-                <span className="text-2xl font-bold text-primary">Q</span>
+            <div className="flex items-center space-x-4 rounded-lg border bg-card p-6">
+                <CircleDollarSign className="h-8 w-8 text-primary" />
                 <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium leading-none">Monto a Pagar</p>
+                    <p className="text-sm font-medium leading-none text-muted-foreground">Monto a Pagar (Q)</p>
                     <p className="text-2xl font-bold">{amountToPay}</p>
                 </div>
             </div>

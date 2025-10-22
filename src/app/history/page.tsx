@@ -34,38 +34,35 @@ export default function HistoryPage() {
   const { data: sessions, loading } = useCollection<ParkingSession>(sessionsQuery);
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <h1 className="mb-8 font-headline text-4xl font-bold tracking-tight md:text-5xl">
-        Mi Historial de Uso
-      </h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Registros de Aparcamiento</CardTitle>
-          <CardDescription>
+    <div className="flex-1 space-y-8">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight font-headline">Mi Historial de Uso</h2>
+        <p className="text-muted-foreground">
             Aquí puedes ver todas tus sesiones de aparcamiento anteriores.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading && <p>Cargando historial...</p>}
+        </p>
+      </div>
+      <Card>
+        <CardContent className="p-0">
+          {loading && <p className="p-6 text-center">Cargando historial...</p>}
           {!loading && sessions && (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Plaza</TableHead>
+                  <TableHead className="w-[100px]">Plaza</TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Duración</TableHead>
-                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Estado</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sessions.map(session => (
                   <TableRow key={session.id}>
-                    <TableCell>{session.spotId}</TableCell>
+                    <TableCell className="font-medium">{session.spotId}</TableCell>
                     <TableCell>
                       {session.startTime ? format(session.startTime.toDate(), 'dd/MM/yyyy HH:mm') : 'N/A'}
                     </TableCell>
                     <TableCell>{calculateDuration(session.startTime, session.endTime)}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-right">
                        <Badge variant={session.status === 'active' ? 'default' : 'secondary'}>
                             {session.status === 'active' ? 'Activa' : 'Completada'}
                         </Badge>
@@ -76,7 +73,7 @@ export default function HistoryPage() {
             </Table>
           )}
            {!loading && (!sessions || sessions.length === 0) && (
-            <p className="text-center text-muted-foreground">No tienes sesiones de aparcamiento registradas.</p>
+            <p className="p-6 text-center text-muted-foreground">No tienes sesiones de aparcamiento registradas.</p>
            )}
         </CardContent>
       </Card>

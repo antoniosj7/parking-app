@@ -31,10 +31,10 @@ const NavLink = ({ href, icon, text, isCollapsed }: NavLinkProps) => {
     <Link
       href={href}
       className={cn(
-        'flex items-center gap-4 px-3 py-2 rounded-lg text-base transition-colors duration-200',
+        'flex items-center gap-4 px-3 py-2.5 rounded-lg text-base font-medium transition-all duration-200',
         isActive
-          ? 'bg-primary/10 text-primary font-semibold'
-          : 'text-muted-foreground hover:bg-primary/5 hover:text-primary',
+          ? 'bg-primary text-primary-foreground'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
         isCollapsed ? 'justify-center' : ''
       )}
     >
@@ -99,7 +99,6 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
         description: "Has cerrado sesión correctamente.",
       });
       router.push('/');
-      // Forzar un refresco de la página al redirigir para asegurar que el estado de autenticación se actualiza
       router.refresh(); 
     } catch (error) {
       toast({
@@ -112,27 +111,22 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
 
   return (
     <aside className={cn(
-        "flex flex-col border-r bg-background transition-all duration-300 ease-in-out",
+        "flex flex-col border-r bg-background transition-all duration-300 ease-in-out z-20",
         isCollapsed ? 'w-20' : 'w-64'
     )}>
-        {/* Header */}
         <div className={cn("flex items-center border-b h-16 px-4", isCollapsed ? 'justify-center' : 'justify-between')}>
             <Link href={isAdmin ? '/admin' : '/grid'} className={cn("flex items-center gap-2 overflow-hidden", isCollapsed ? 'justify-center' : '')}>
                 <Logo className='h-8 w-8' />
-                <span className={cn('font-bold font-headline whitespace-nowrap transition-opacity', isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto')}>PUMG</span>
+                <span className={cn('font-bold text-lg font-headline whitespace-nowrap transition-opacity', isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto')}>PUMG</span>
             </Link>
-            <Button variant="ghost" size="icon" onClick={toggleCollapse} className={cn('hidden md:flex transition-opacity', isCollapsed ? 'opacity-0' : 'opacity-100')}>
-                <ChevronLeft />
-            </Button>
         </div>
 
-        {/* Floating Toggle Button */}
-         <div className="hidden md:block absolute top-[calc(50%-20px)] transition-all duration-300 ease-in-out"
+         <div className="hidden md:block absolute top-6 transition-all duration-300 ease-in-out"
               style={{ left: isCollapsed ? '60px' : '235px' }}>
             <TooltipProvider delayDuration={100}>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" className="rounded-full" onClick={toggleCollapse}>
+                        <Button variant="outline" size="icon" className="rounded-full bg-background/70 backdrop-blur-sm" onClick={toggleCollapse}>
                             {isCollapsed ? <ChevronRight /> : <ChevronLeft />}
                         </Button>
                     </TooltipTrigger>
@@ -143,33 +137,29 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
             </TooltipProvider>
         </div>
 
-
-        {/* Navigation Links */}
-        <nav className="flex-1 space-y-2 p-4">
+        <nav className="flex-1 space-y-2 p-3 mt-4">
             {links.map((link) => (
                 <NavLink key={link.href} {...link} isCollapsed={isCollapsed} />
             ))}
         </nav>
         
-        {/* Footer with User Info and Logout */}
-        <div className="border-t p-4">
-            <div className={cn("flex items-center gap-3", isCollapsed ? 'justify-center' : '')}>
-                 <div className="flex-shrink-0">
+        <div className="border-t mt-auto">
+            <div className={cn("flex items-center gap-3 p-3")}>
+                 <div className={cn("flex-shrink-0", isCollapsed ? 'w-full' : '')}>
                     <TooltipProvider delayDuration={100}>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={handleLogout} className="rounded-full">
+                            <Button variant="ghost" size={isCollapsed ? 'icon' : 'default'} onClick={handleLogout} className={cn("w-full justify-start", isCollapsed && "justify-center")}>
                                 <LogOut />
+                                <span className={cn('ml-4 transition-opacity', isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto')}>Cerrar Sesión</span>
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="right">
-                            <p>Cerrar Sesión</p>
-                        </TooltipContent>
+                         {isCollapsed && <TooltipContent side="right"><p>Cerrar Sesión</p></TooltipContent>}
                       </Tooltip>
                     </TooltipProvider>
                  </div>
-                 <div className={cn("flex flex-col overflow-hidden transition-all", isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100')}>
-                     <p className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</p>
+                 <div className={cn("flex flex-col overflow-hidden transition-all duration-200", isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100')}>
+                     <p className="text-sm font-semibold truncate">{user?.displayName || 'Usuario'}</p>
                      <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                  </div>
             </div>
