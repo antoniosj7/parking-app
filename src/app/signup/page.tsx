@@ -22,6 +22,7 @@ import { Loader2 } from "lucide-react";
 export default function SignupPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -119,6 +120,17 @@ export default function SignupPage() {
                     disabled={loading}
                   />
                 </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="phone">Teléfono</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="5555-1234"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  disabled={loading}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Correo Electrónico</Label>
