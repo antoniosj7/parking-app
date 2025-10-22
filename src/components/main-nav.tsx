@@ -128,7 +128,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
         "flex flex-col border-r bg-card transition-all duration-300 ease-in-out z-20",
         isCollapsed ? 'w-20' : 'w-64'
     )}>
-        <div className={cn("flex items-center border-b h-16", isCollapsed ? 'justify-center px-2' : 'justify-between px-4')}>
+        <div className={cn("flex items-center border-b h-16 shrink-0", isCollapsed ? 'justify-center px-2' : 'justify-between px-4')}>
             <Link href={isAdmin ? '/admin' : '/grid'} className={cn("flex items-center gap-2 overflow-hidden", isCollapsed ? 'justify-center' : '')}>
                 <Logo className='h-8 w-8 text-primary' />
                 <span className={cn('font-bold text-lg font-headline whitespace-nowrap transition-opacity', isCollapsed ? 'sr-only' : 'delay-100')}>PUMG</span>
@@ -153,7 +153,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
             </TooltipProvider>
         </div>
 
-        <nav className="flex-1 space-y-2 p-3 mt-4">
+        <nav className="flex-1 space-y-2 p-3 mt-4 overflow-y-auto">
             {isAdmin ? (
                  <Accordion type="multiple" defaultValue={['item-1', 'item-2', 'item-3']} className="w-full">
                     {isCollapsed ? (
@@ -168,15 +168,19 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
                            <NavLink {...adminLinks.dashboard} isCollapsed={isCollapsed} pathname={pathname} />
                            <NavLink {...adminLinks.parkingView} isCollapsed={isCollapsed} pathname={pathname} />
 
-                           <div className="px-4 pt-4 pb-2">
+                           <AccordionItem value="item-2" className="border-none px-4 pt-4 pb-2">
                              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Gestión</h3>
+                           </AccordionItem>
+                           <div className="space-y-1">
+                            {adminManagementLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
                            </div>
-                           {adminManagementLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
                            
-                           <div className="px-4 pt-4 pb-2">
+                           <AccordionItem value="item-3" className="border-none px-4 pt-4 pb-2">
                              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Análisis</h3>
+                           </AccordionItem>
+                           <div className="space-y-1">
+                            {adminAnalyticsLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
                            </div>
-                           {adminAnalyticsLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
                         </>
                     )}
                  </Accordion>
@@ -187,7 +191,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
             )}
         </nav>
         
-        <div className="border-t mt-auto">
+        <div className="border-t mt-auto shrink-0">
             <div className={cn("flex items-center gap-3 p-3")}>
                  <div className={cn("flex-shrink-0", isCollapsed ? 'w-full' : '')}>
                     <TooltipProvider delayDuration={100}>
