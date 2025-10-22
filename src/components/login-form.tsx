@@ -32,6 +32,12 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
 
   const handleAuthSuccess = async (user: User) => {
+    // Antonio SJ: Lógica de roles segura.
+    // 1. Obtenemos el token de ID del usuario de Firebase.
+    // 2. El token contiene 'claims' (reclamaciones) personalizadas. Buscamos la claim 'role'.
+    // 3. Si un usuario no tiene la claim 'role' (como todos los nuevos usuarios, incluidos los de Google),
+    //    se le asigna por defecto el rol 'user'.
+    // 4. El único que puede añadir la claim 'role: admin' es un administrador a través de las herramientas del servidor (set-admin-claim.ts).
     const idTokenResult = await user.getIdTokenResult(true);
     const role = (idTokenResult.claims.role as string) || 'user';
     
