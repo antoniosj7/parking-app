@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { useUser } from '@/firebase';
 import Loading from '@/app/loading';
 import MainNav from '@/components/main-nav';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useUser();
-  const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
