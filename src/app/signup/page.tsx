@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/logo";
+import { Loader2 } from "lucide-react";
 
 export default function SignupPage() {
   const [firstName, setFirstName] = useState('');
@@ -52,10 +53,10 @@ export default function SignupPage() {
 
       toast({
         title: "¡Cuenta creada con éxito!",
-        description: `Bienvenido, ${firstName}. Serás redirigido para iniciar sesión.`,
+        description: `Bienvenido, ${firstName}. Serás redirigido a tu panel.`,
       });
       
-      // Redirige a la página principal. El AuthLayout se encargará de llevarlo a la vista correcta.
+      // Redirige a la raíz. El AuthLayout se encargará de llevarlo a la vista correcta.
       router.push('/');
       router.refresh();
 
@@ -143,7 +144,7 @@ export default function SignupPage() {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+                {loading ? <Loader2 className="animate-spin" /> : 'Crear cuenta'}
               </Button>
             </form>
             <div className="mt-4 text-center text-sm">

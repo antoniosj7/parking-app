@@ -31,6 +31,21 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleAuthSuccess = async (user: any) => {
+    const idTokenResult = await user.getIdTokenResult(true); // Forzar recarga del token
+    const role = (idTokenResult.claims.role as string) || 'user';
+    
+    setUserRole(role);
+    toast({
+        title: "Login exitoso",
+        description: "Bienvenido. Redirigiendo...",
+    });
+
+    const targetPath = role === 'admin' ? '/admin' : '/grid';
+    router.push(targetPath);
+    router.refresh();
+  };
+
   const handleGoogleSignIn = async () => {
     if (!auth) {
         toast({
@@ -44,16 +59,7 @@ export default function LoginForm() {
     const provider = new GoogleAuthProvider();
     try {
         const result = await signInWithPopup(auth, provider);
-        const idTokenResult = await result.user.getIdTokenResult();
-        const role = (idTokenResult.claims.role as string) || 'user';
-        
-        setUserRole(role);
-        toast({
-            title: "Login con Google exitoso",
-            description: "Bienvenido. Redirigiendo...",
-        });
-        router.push(role === 'admin' ? '/admin' : '/grid');
-        router.refresh();
+        await handleAuthSuccess(result.user);
     } catch (error: any) {
         toast({
             variant: "destructive",
@@ -81,16 +87,7 @@ export default function LoginForm() {
     
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const idTokenResult = await userCredential.user.getIdTokenResult();
-        const role = (idTokenResult.claims.role as string) || 'user';
-
-        setUserRole(role);
-        toast({
-            title: "Login exitoso",
-            description: "Bienvenido. Redirigiendo...",
-        });
-        router.push(role === 'admin' ? '/admin' : '/grid');
-        router.refresh();
+        await handleAuthSuccess(userCredential.user);
     } catch (error: any) {
         let description = "Usuario o contraseña incorrectos.";
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
