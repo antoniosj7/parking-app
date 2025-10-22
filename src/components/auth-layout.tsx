@@ -35,9 +35,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   // Si hay un rol, muestra el diseño principal con el menú de navegación.
   return (
-    <div className="main-layout" data-collapsed={isCollapsed}>
+    <div className="main-layout flex min-h-screen w-full" data-collapsed={isCollapsed}>
       <MainNav isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />
-      <main className="overflow-y-auto p-4 md:p-8">{children}</main>
+      <main className="overflow-y-auto p-4 md:p-8 flex-1">{children}</main>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { Logo } from './logo';
+import { Avatar, AvatarFallback } from './ui/avatar';
 
 interface NavLinkProps {
   href: string;
@@ -26,7 +27,7 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
-  const isActive = pathname === href;
+  const isActive = pathname === href || (pathname.startsWith(href) && href !== '/');
 
   const content = (
     <Link
@@ -101,6 +102,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
   const { toast } = useToast();
   
   const isAdmin = userRole === 'admin';
+  const userInitial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
 
   const handleLogout = async () => {
     try {
@@ -125,7 +127,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
 
   return (
     <aside className={cn(
-        "flex flex-col border-r bg-card transition-all duration-300 ease-in-out z-20",
+        "flex h-screen flex-col border-r bg-card transition-all duration-300 ease-in-out z-20 sticky top-0",
         isCollapsed ? 'w-20' : 'w-64'
     )}>
         <div className={cn("flex items-center border-b h-16 shrink-0", isCollapsed ? 'justify-center px-2' : 'justify-between px-4')}>
@@ -185,33 +187,35 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
                     )}
                  </Accordion>
             ) : (
-                userLinks.map((link) => (
-                    <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />
-                ))
+                <div className="space-y-1">
+                 {userLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
+                </div>
             )}
         </nav>
         
-        <div className="border-t mt-auto shrink-0">
-            <div className={cn("flex items-center gap-3 p-3")}>
-                 <div className={cn("flex-shrink-0", isCollapsed ? 'w-full' : '')}>
-                    <TooltipProvider delayDuration={100}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant="ghost" size={isCollapsed ? 'icon' : 'default'} onClick={handleLogout} className={cn("w-full justify-start text-muted-foreground hover:text-destructive", isCollapsed && "justify-center")}>
-                                <LogOut size={20} />
-                                <span className={cn('ml-4 transition-opacity', isCollapsed ? 'sr-only' : '')}>Cerrar Sesión</span>
-                            </Button>
-                        </TooltipTrigger>
-                         {isCollapsed && <TooltipContent side="right"><p>Cerrar Sesión</p></TooltipContent>}
-                      </Tooltip>
-                    </TooltipProvider>
-                 </div>
-                 <div className={cn("flex flex-col overflow-hidden transition-all duration-200", isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100')}>
-                     <p className="text-sm font-semibold truncate">{user?.displayName || 'Usuario'}</p>
-                     <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                 </div>
-            </div>
+        <div className="mt-auto border-t p-3">
+          <div className={cn("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
+             <Avatar className="h-9 w-9">
+                <AvatarFallback className="bg-primary/20 text-primary font-semibold">{userInitial}</AvatarFallback>
+             </Avatar>
+             <div className={cn("flex flex-col overflow-hidden", isCollapsed ? "sr-only" : "")}>
+                <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
+                <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
+             </div>
+             <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" className={cn("rounded-lg", isCollapsed ? "" : "ml-auto")} onClick={handleLogout}>
+                            <LogOut size={20} />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        <p>Cerrar Sesión</p>
+                    </TooltipContent>
+                </Tooltip>
+             </TooltipProvider>
+          </div>
         </div>
     </aside>
-  );
+  )
 }
