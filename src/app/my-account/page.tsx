@@ -1,11 +1,12 @@
 'use client';
 // Antonio SJ
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Clock, Car, CircleDollarSign } from "lucide-react";
+import { Clock, Car } from "lucide-react";
 import { useUser, useCollection } from "@/firebase";
 import { collection, query, where, getFirestore } from 'firebase/firestore';
 import type { ParkingSession } from "@/lib/types";
 import { useEffect, useState } from "react";
+import { QIcon } from "@/components/q-icon";
 
 const TARIFF_PER_HOUR = 10; // Q 10.00 por hora
 
@@ -88,10 +89,10 @@ export default function MyAccountPage() {
                 </div>
             </div>
             <div className="flex items-center space-x-4 rounded-lg border bg-card p-6">
-                <CircleDollarSign className="h-8 w-8 text-primary" />
+                <QIcon className="h-8 w-8 text-primary" />
                 <div className="flex-1 space-y-1">
                     <p className="text-sm font-medium leading-none text-muted-foreground">Monto a Pagar (Q)</p>
-                    <p className="text-2xl font-bold">{amountToPay}</p>
+                    <p className="text-2xl font-bold">Q{amountToPay}</p>
                 </div>
             </div>
         </CardContent>

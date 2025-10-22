@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BarChart, Clock, CircleDollarSign } from "lucide-react";
+import { BarChart, Clock } from "lucide-react";
 import OccupancyChart from "@/components/occupancy-chart";
+import { QIcon } from "@/components/q-icon";
 
 export default function StatisticsPage() {
   return (
@@ -17,7 +18,7 @@ export default function StatisticsPage() {
             <CardTitle className="text-sm font-medium">
               Ingresos Totales (Hoy)
             </CardTitle>
-            <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
+            <QIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Q 1,250.50</div>
