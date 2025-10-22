@@ -81,6 +81,29 @@ export default function LoginForm() {
     event.preventDefault();
     setLoading(true);
 
+    // ---- MOCK USERS FOR DEVELOPMENT ----
+    // This allows testing admin/user roles without real Firebase users.
+    // This code DOES NOT run in production.
+    if (process.env.NODE_ENV === 'development') {
+      if (email === 'admin@pumg.com' && password === 'admin') {
+        setUserRole('admin');
+        toast({ title: "Login de prueba exitoso", description: "Iniciaste como Administrador." });
+        router.push('/admin');
+        router.refresh();
+        setLoading(false);
+        return;
+      }
+      if (email === 'user@pumg.com' && password === 'user') {
+        setUserRole('user');
+        toast({ title: "Login de prueba exitoso", description: "Iniciaste como Usuario." });
+        router.push('/grid');
+        router.refresh();
+        setLoading(false);
+        return;
+      }
+    }
+    // ---- END MOCK USERS ----
+
     if (!auth) {
         toast({
             variant: "destructive",
