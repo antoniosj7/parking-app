@@ -17,9 +17,15 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
+
+// Antonio SJ: Usuarios de prueba locales que solo funcionan en desarrollo.
+const DEV_USERS = {
+  'admin@pumg.com': { role: 'admin', displayName: 'Admin de Desarrollo' },
+  'user@pumg.com': { role: 'user', displayName: 'Usuario de Desarrollo' }
+};
 
 export default function LoginForm() {
   const router = useRouter();
@@ -31,16 +37,27 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleAuthSuccess = async (user: any) => {
-    const idTokenResult = await user.getIdTokenResult(true); // Forzar recarga del token
+  const handleAuthSuccess = async (user: User) => {
+    const idTokenResult = await user.getIdTokenResult(true);
     const role = (idTokenResult.claims.role as string) || 'user';
     
-    setUserRole(role);
+    setUserRole(role as 'admin' | 'user');
     toast({
         title: "Login exitoso",
-        description: "Bienvenido. Redirigiendo...",
+        description: `Bienvenido, ${user.displayName || 'usuario'}. Redirigiendo...`,
     });
 
+    const targetPath = role === 'admin' ? '/admin' : '/grid';
+    router.push(targetPath);
+    router.refresh();
+  };
+
+  const handleDevLogin = (role: 'admin' | 'user', displayName: string) => {
+    setUserRole(role);
+    toast({
+      title: "Login de desarrollo exitoso",
+      description: `Bienvenido, ${displayName}. Redirigiendo...`,
+    });
     const targetPath = role === 'admin' ? '/admin' : '/grid';
     router.push(targetPath);
     router.refresh();
@@ -75,6 +92,16 @@ export default function LoginForm() {
     event.preventDefault();
     setLoading(true);
 
+    // Antonio SJ: Lógica de usuarios de prueba solo en modo desarrollo.
+    if (process.env.NODE_ENV === 'development') {
+      const devUser = DEV_USERS[email as keyof typeof DEV_USERS];
+      if (devUser && password === devUser.role) {
+        handleDevLogin(devUser.role as 'admin' | 'user', devUser.displayName);
+        setLoading(false);
+        return;
+      }
+    }
+    
     if (!auth) {
         toast({
             variant: "destructive",

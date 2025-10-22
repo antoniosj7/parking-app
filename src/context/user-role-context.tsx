@@ -8,31 +8,63 @@ type UserRole = 'admin' | 'user' | null;
 interface UserRoleContextType {
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
+  isLoading: boolean;
 }
 
 const UserRoleContext = createContext<UserRoleContextType | undefined>(undefined);
 
+// Antonio SJ: Usuarios de prueba locales para desarrollo
+const DEV_USERS = {
+  'admin@pumg.com': { role: 'admin' },
+  'user@pumg.com': { role: 'user' }
+};
+
 export function UserRoleProvider({ children }: { children: ReactNode }) {
   const [userRole, setUserRole] = useState<UserRole>(null);
-  const { user } = useUser();
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, loading: userLoading } = useUser();
 
   useEffect(() => {
+    setIsLoading(userLoading);
+    if (userLoading) {
+      return;
+    }
+    
     if (user) {
-      // Recuperar el rol del token de Firebase para persistirlo en refreshes
+      // Antonio SJ: En desarrollo, si es un usuario de prueba, asigna el rol localmente.
+      if (process.env.NODE_ENV === 'development') {
+          const devUser = DEV_USERS[user.email as keyof typeof DEV_USERS];
+          if (devUser) {
+              setUserRole(devUser.role as UserRole);
+              setIsLoading(false);
+              return;
+          }
+      }
+
+      // Antonio SJ: Para usuarios reales, obtener el rol del token de Firebase.
       user.getIdTokenResult().then((idTokenResult) => {
         const role = (idTokenResult.claims.role as string) || 'user';
         setUserRole(role as UserRole);
       }).catch((error) => {
         console.error('Error obteniendo rol del token:', error);
         setUserRole('user'); // Fallback a user
+      }).finally(() => {
+        setIsLoading(false);
       });
     } else {
       setUserRole(null);
+      setIsLoading(false);
     }
-  }, [user]);
+  }, [user, userLoading]);
+
+  // Si el rol está siendo seteado por una fuente externa (como el dev login)
+  const setRoleDirectly = (role: UserRole) => {
+    setUserRole(role);
+    setIsLoading(false);
+  }
 
   return (
-    <UserRoleContext.Provider value={{ userRole, setUserRole }}>
+    <UserRoleContext.Provider value={{ userRole, setUserRole: setRoleDirectly, isLoading }}>
       {children}
     </UserRoleContext.Provider>
   );

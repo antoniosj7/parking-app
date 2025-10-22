@@ -1,22 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@/firebase';
 import Loading from '@/app/loading';
 import MainNav from '@/components/main-nav';
+import { useUserRole } from '@/context/user-role-context';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useUser();
+  const { userRole, isLoading } = useUserRole();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
-    // Solo se ejecuta en el cliente
     if (typeof window !== 'undefined') {
         const collapsedState = localStorage.getItem('nav-collapsed') === 'true';
         setIsCollapsed(collapsedState);
     }
   }, []);
-
 
   const toggleCollapse = () => {
     const newState = !isCollapsed;
@@ -26,17 +24,16 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     }
   };
   
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
   
-  // Si no hay usuario (y no estamos cargando), es una página pública (login/signup)
-  if (!user) {
-    // Renderiza solo el contenido de la página, sin el diseño de navegación principal.
+  // Si no hay rol (y no estamos cargando), es una página pública (login/signup)
+  if (!userRole) {
     return <>{children}</>;
   }
 
-  // Si hay un usuario, muestra el diseño principal con el menú de navegación.
+  // Si hay un rol, muestra el diseño principal con el menú de navegación.
   return (
     <div className="main-layout" data-collapsed={isCollapsed}>
       <MainNav isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />
