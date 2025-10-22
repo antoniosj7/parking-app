@@ -42,13 +42,16 @@ export default function LoginForm() {
     setGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-        await signInWithPopup(auth, provider);
-        setUserRole('user');
+        const result = await signInWithPopup(auth, provider);
+        const idTokenResult = await result.user.getIdTokenResult();
+        const role = (idTokenResult.claims.role as string) || 'user';
+        
+        setUserRole(role);
         toast({
             title: "Login con Google exitoso",
-            description: "Bienvenido. Redirigiendo a la parrilla...",
+            description: "Bienvenido. Redirigiendo...",
         });
-        router.push('/grid');
+        router.push(role === 'admin' ? '/admin' : '/grid');
         router.refresh();
     } catch (error: any) {
         toast({
@@ -87,13 +90,16 @@ export default function LoginForm() {
     }
     
     try {
-        await signInWithEmailAndPassword(auth, email, password);
-        setUserRole('user');
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const idTokenResult = await userCredential.user.getIdTokenResult();
+        const role = (idTokenResult.claims.role as string) || 'user';
+
+        setUserRole(role);
         toast({
             title: "Login exitoso",
-            description: "Bienvenido. Redirigiendo a la parrilla de aparcamiento...",
+            description: "Bienvenido. Redirigiendo...",
         });
-        router.push('/grid');
+        router.push(role === 'admin' ? '/admin' : '/grid');
         router.refresh();
     } catch (error: any) {
         let description = "Usuario o contraseña incorrectos.";
