@@ -8,7 +8,7 @@ import * as functions from 'firebase-functions';
 let spots: Set<string>;
 
 try {
-  const allowedSpotsJson = process.env.ALLOWED_SPOTS_JSON || '[]';
+  const allowedSpotsJson = process.env.ALLOWED_SPOTS_JSON || '["P1", "P2", "P3", "P4"]';
   const parsedSpots: string[] = JSON.parse(allowedSpotsJson);
   spots = new Set(parsedSpots);
 } catch (error) {
