@@ -18,7 +18,6 @@ import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
 import { useAuth, useDatabase } from "@/firebase";
-import { Separator } from "./ui/separator";
 import { ref, get, set } from "firebase/database";
 import type { User as DbUser } from "@/lib/types";
 
@@ -169,9 +168,9 @@ export default function LoginForm() {
               </Button>
             </div>
             <div className="my-4 flex items-center">
-              <Separator className="flex-1" />
+              <div className="flex-1 border-t border-border" />
               <span className="mx-4 text-xs text-muted-foreground">O INICIA SESIÓN CON EMAIL</span>
-              <Separator className="flex-1" />
+              <div className="flex-1 border-t border-border" />
             </div>
           <form className="grid gap-4" onSubmit={handleSubmit}>
             <div className="grid gap-2">
