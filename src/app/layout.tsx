@@ -3,7 +3,6 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { UserRoleProvider } from '@/context/user-role-context';
 import AuthLayout from '@/components/auth-layout';
 
 export const metadata: Metadata = {
@@ -26,12 +25,10 @@ export default function RootLayout({
       </head>
       <body className={cn("min-h-screen bg-background font-body antialiased flex")}>
         <FirebaseClientProvider>
-          <UserRoleProvider>
             <AuthLayout>
               {children}
             </AuthLayout>
             <Toaster />
-          </UserRoleProvider>
         </FirebaseClientProvider>
       </body>
     </html>

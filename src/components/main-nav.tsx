@@ -7,8 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
     LayoutDashboard, LogOut,
-    ChevronLeft, ChevronRight, ParkingCircle, Users,
-    History, BarChart, FileText, Settings, User as UserIcon, Clock
+    ChevronLeft, ChevronRight, Users,
+    History, BarChart, FileText, Settings
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
@@ -64,29 +64,21 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
   return content;
 };
 
-const adminLinks = [
-    { href: '/admin/parking', icon: <LayoutDashboard size={20} />, text: 'Parqueo' },
-    { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
-    { href: '/admin/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
-    { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
-    { href: '/admin/stats', icon: <BarChart size={20} />, text: 'Estadísticas' },
-    { href: '/admin/settings', icon: <Settings size={20} />, text: 'Ajustes' },
-];
-
-const userLinks = [
-  { href: '/app/parking', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
-  { href: '/app/session', icon: <Clock size={20} />, text: 'Mi Sesión' },
-  { href: '/app/history', icon: <History size={20} />, text: 'Mi Historial' },
-  { href: '/app/profile', icon: <UserIcon size={20} />, text: 'Mi Perfil' },
+const navLinks = [
+    { href: '/parking', icon: <LayoutDashboard size={20} />, text: 'Parqueo' },
+    { href: '/sessions', icon: <History size={20} />, text: 'Sesiones' },
+    { href: '/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
+    { href: '/user-management', icon: <Users size={20} />, text: 'Usuarios' },
+    { href: '/stats', icon: <BarChart size={20} />, text: 'Estadísticas' },
+    { href: '/settings', icon: <Settings size={20} />, text: 'Ajustes' },
 ];
 
 interface MainNavProps {
   isCollapsed: boolean;
   toggleCollapse: () => void;
-  role: 'admin' | 'user';
 }
 
-export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavProps) {
+export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
@@ -114,10 +106,9 @@ export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavPr
     }
   };
   
-  const links = role === 'admin' ? adminLinks : userLinks;
-  const homeHref = role === 'admin' ? '/admin/parking' : '/app/parking';
-  const title = role === 'admin' ? 'Panel Admin' : 'PUMG';
-  const profileName = role === 'admin' ? 'Administrador' : (user?.displayName || 'Usuario');
+  const homeHref = '/parking';
+  const title = 'Panel Admin';
+  const profileName = (user?.displayName || 'Usuario');
 
   return (
     <aside className={cn(
@@ -146,12 +137,12 @@ export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavPr
                         <p>{isCollapsed ? 'Expandir' : 'Colapsar'}</p>
                     </TooltipContent>
                 </Tooltip>
-            </TooltipProvider>
+             </TooltipProvider>
         </div>
 
         <nav className="flex-1 space-y-2 p-3 mt-4 overflow-y-auto">
            <div className="space-y-1">
-              {links.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
+              {navLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
             </div>
         </nav>
         

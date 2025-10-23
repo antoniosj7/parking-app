@@ -2,52 +2,62 @@
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '@/app/loading';
-import { useUserRole } from '@/context/user-role-context';
+import { useUser } from '@/firebase';
+import MainNav from './main-nav';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  const { userRole, isLoading } = useUserRole();
+  const { user, loading } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   useEffect(() => {
-    if (isLoading) {
-      return; // Wait until role is determined
+    const collapsedState = localStorage.getItem('nav-collapsed') === 'true';
+    setIsCollapsed(collapsedState);
+  }, []);
+
+  const toggleCollapse = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    localStorage.setItem('nav-collapsed', String(newState));
+  };
+
+
+  useEffect(() => {
+    if (loading) {
+      return;
     }
 
     const isAuthPage = pathname === '/' || pathname === '/signup';
     
-    if (userRole) { // User is logged in
-      const isAdminArea = pathname.startsWith('/admin');
-      const isUserArea = pathname.startsWith('/app');
-
-      if (userRole === 'admin') {
-        if (!isAdminArea) {
-          router.replace('/admin/parking');
-        }
-      } else { // userRole is 'user'
-        if (!isUserArea) {
-          router.replace('/app/parking');
-        }
+    if (user) { // User is logged in
+      if (isAuthPage) {
+        router.replace('/parking');
       }
     } else { // User is not logged in
       if (!isAuthPage) {
         router.replace('/');
       }
     }
-  }, [isLoading, userRole, pathname, router]);
+  }, [loading, user, pathname, router]);
 
-  // While loading, show a full-screen loader
-  if (isLoading) {
+  if (loading) {
     return <Loading />;
   }
-  
-  // Prevent rendering incorrect layout during redirection
+
   const isAuthPage = pathname === '/' || pathname === '/signup';
-  if (!userRole && !isAuthPage) return <Loading />;
-  if (userRole === 'admin' && !pathname.startsWith('/admin')) return <Loading />;
-  if (userRole === 'user' && !pathname.startsWith('/app')) return <Loading />;
 
+  if (!user && !isAuthPage) return <Loading />;
+  if (user && isAuthPage) return <Loading />;
+  
+  if (!user) {
+    return <>{children}</>;
+  }
 
-  // If everything is correct, render the children
-  return <>{children}</>;
+  return (
+    <div className="main-layout flex min-h-screen w-full" data-collapsed={isCollapsed}>
+      <MainNav isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />
+      <main className="overflow-y-auto p-4 md:p-8 flex-1">{children}</main>
+    </div>
+  );
 }
