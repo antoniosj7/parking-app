@@ -28,8 +28,8 @@ export default function LoginForm() {
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [email, setEmail] = useState('admin@pumg.com');
-  const [password, setPassword] = useState('123456789');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleAuthSuccess = async (user: User) => {
     const idTokenResult = await user.getIdTokenResult(true); // Force refresh

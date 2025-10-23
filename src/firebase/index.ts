@@ -6,27 +6,20 @@ import { useUser } from './auth/use-user';
 import { FirebaseClientProvider } from './client-provider';
 import { useRtdbValue } from './rtdb/use-rtdb-value';
 
-let firebaseApp: FirebaseApp;
-
-const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
-if (!firebaseConfigStr) {
-  throw new Error("La variable de entorno NEXT_PUBLIC_FIREBASE_CONFIG no está definida.");
-}
-const firebaseConfig = JSON.parse(firebaseConfigStr);
-
-if (getApps().length === 0) {
-  firebaseApp = initializeApp(firebaseConfig);
-} else {
-  firebaseApp = getApp();
-}
-
-const auth = getAuth(firebaseApp);
-const database = getDatabase(firebaseApp);
-
 // This function is a bit of a placeholder, we are not using it to initialize the app
 // on a per-request basis, but we are keeping it for now.
 function initializeFirebase() {
-  return { firebaseApp, auth, database };
+  const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
+  if (!firebaseConfigStr) {
+    throw new Error("La variable de entorno NEXT_PUBLIC_FIREBASE_CONFIG no está definida.");
+  }
+  const firebaseConfig = JSON.parse(firebaseConfigStr);
+
+  const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  return { firebaseApp: app, auth, database };
 }
 
 

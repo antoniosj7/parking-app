@@ -8,7 +8,7 @@ import ParkingSpotSkeleton from './parking-spot-skeleton';
 export default function ParkingGrid() {
   const allowedSpotsArray = Array.from(ALLOWED_SPOTS);
 
-  // Create hooks for each spot
+  // Create hooks for each spot to get real-time occupancy from RTDB
   const spotData = allowedSpotsArray.map(spotId => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data, loading } = useRtdbValue<boolean>(`/${spotId}`);
@@ -38,6 +38,8 @@ export default function ParkingGrid() {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
       {spotData.map(({ id, occupied }) => (
+        // We only pass the id and the real-time occupied status.
+        // The ParkingSpot component will handle its own presentation.
         <ParkingSpot 
           key={id} 
           spot={{ id, occupied: !!occupied }} 

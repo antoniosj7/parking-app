@@ -139,7 +139,7 @@ export default function SignupForm() {
                 required 
                 disabled={loading}
                 value={password}
-                onChange={(e) => setPassword(e.g.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <Button type="submit" className="w-full mt-2" disabled={loading}>
