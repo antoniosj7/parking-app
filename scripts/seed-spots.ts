@@ -1,7 +1,6 @@
 // Autor: Antonio SJ
-// Este script ahora interactúa con Realtime Database
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, set } from 'firebase/database';
+import { getFirestore, collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import 'dotenv/config';
 
 const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
@@ -26,27 +25,35 @@ async function main() {
         console.error('Error: El projectId de Firebase no está en la configuración.');
         process.exit(1);
     }
-    console.log(`Iniciando la siembra de plazas en RTDB para el proyecto: ${firebaseConfig.projectId}...`);
+    console.log(`Iniciando la siembra de plazas para el proyecto: ${firebaseConfig.projectId}...`);
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const db = getFirestore(app);
+    const spotsCollection = collection(db, 'spots');
 
     const seedPromises: Promise<void>[] = [];
 
     ALLOWED_SPOTS.forEach(spotId => {
-        const spotRef = ref(db, `/${spotId}`);
-        console.log(`Creando plaza en RTDB: /${spotId}`);
-        // En RTDB, simplemente guardamos el valor booleano
-        seedPromises.push(set(spotRef, false)); // false = LIBRE
+        const spotRef = doc(spotsCollection, spotId);
+        const spotData = {
+            id: spotId,
+            status: 'available', // Se inicializa como 'available'
+            occupied: false,
+            lastChangeAt: serverTimestamp(),
+            currentSessionId: null,
+            user: null
+        };
+        console.log(`Creando plaza: ${spotId}`);
+        seedPromises.push(setDoc(spotRef, spotData));
     });
 
     await Promise.all(seedPromises);
-    console.log(`Siembra completada. ${ALLOWED_SPOTS.length} plazas creadas en RTDB.`);
+    console.log(`Siembra completada. ${ALLOWED_SPOTS.length} plazas creadas.`);
     // Forzar la salida exitosa para terminar el proceso de node
     process.exit(0);
 }
 
 main().catch(error => {
-    console.error('Error durante la siembra de plazas en RTDB:', error);
+    console.error('Error durante la siembra de plazas:', error);
     process.exit(1);
 });

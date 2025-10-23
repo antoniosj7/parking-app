@@ -1,9 +1,9 @@
 // Autor: Antonio SJ
-// Este script ahora interactúa con Realtime Database
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, remove } from 'firebase/database';
+import { getFirestore, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import 'dotenv/config';
 
+// Este script requiere que las credenciales de Firebase estén configuradas en el entorno.
 const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
 
 async function main() {
@@ -21,34 +21,33 @@ async function main() {
 
     console.log(`Iniciando el reseteo de plazas para el proyecto: ${firebaseConfig.projectId}...`);
     
+    // NOTA: Usamos el SDK cliente para estas operaciones por simplicidad,
+    // pero para un entorno de producción robusto, se usaría el Admin SDK
+    // con credenciales de servicio.
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const db = getFirestore(app);
+    const spotsCollection = collection(db, 'spots');
 
-    // En RTDB, podemos eliminar la raíz de los spots si no hay más nodos en el mismo nivel
-    // O eliminar cada uno individualmente.
-    let ALLOWED_SPOTS: string[];
-    try {
-        const jsonString = process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["P1","P2","P3","P4"]';
-        ALLOWED_SPOTS = JSON.parse(jsonString);
-    } catch (e) {
-        console.error("Error parsing NEXT_PUBLIC_ALLOWED_SPOTS_JSON, usando default.", e);
-        ALLOWED_SPOTS = ["P1", "P2", "P3", "P4"];
+    const snapshot = await getDocs(spotsCollection);
+    if (snapshot.empty) {
+        console.log('No hay plazas para eliminar.');
+        // Forzar la salida exitosa para terminar el proceso de node
+        process.exit(0);
     }
-
+    
     const deletePromises: Promise<void>[] = [];
-    ALLOWED_SPOTS.forEach(spotId => {
-        console.log(`Eliminando plaza: /${spotId}`);
-        const spotRef = ref(db, `/${spotId}`);
-        deletePromises.push(remove(spotRef));
+    snapshot.forEach(doc => {
+        console.log(`Eliminando plaza: ${doc.id}`);
+        deletePromises.push(deleteDoc(doc.ref));
     });
 
     await Promise.all(deletePromises);
-    console.log(`Reseteo completado. ${ALLOWED_SPOTS.length} plazas eliminadas de RTDB.`);
+    console.log(`Reseteo completado. ${snapshot.size} plazas eliminadas.`);
     // Forzar la salida exitosa para terminar el proceso de node
     process.exit(0);
 }
 
 main().catch(error => {
-    console.error('Error durante el reseteo de plazas en RTDB:', error);
+    console.error('Error durante el reseteo de plazas:', error);
     process.exit(1);
 });
