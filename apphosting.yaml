@@ -1,0 +1,4 @@
+run:
+  port: 3000
+  command: npm run start
+nodeVersion: 18
