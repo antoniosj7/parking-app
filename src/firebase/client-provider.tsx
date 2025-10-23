@@ -2,25 +2,25 @@
 
 import { initializeFirebase } from '.';
 import { FirebaseProvider } from './provider';
-import { useEffect } from 'react';
-import { getApp } from 'firebase/app';
+import { getApp, getApps } from 'firebase/app';
+import { UserRoleProvider } from '@/context/user-role-context';
 
 // This provider is used to initialize Firebase on the client side.
 // It ensures that Firebase is initialized only once.
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
-  const { firebaseApp, auth, database } = initializeFirebase();
-
-  useEffect(() => {
-    try {
-        console.info("[FIREBASE CFG]", getApp().options);
-    } catch (e) {
-        // This might fail on first render, it's ok.
-    }
-  }, []);
-
+  // Check if the app is already initialized to avoid re-initializing
+  const appAlreadyInitialized = getApps().length > 0;
+  const { firebaseApp, auth, database } = appAlreadyInitialized ? {
+      firebaseApp: getApp(),
+      auth: null, // Avoid re-initializing services, they will be picked up by hooks
+      database: null
+  } : initializeFirebase();
+  
   return (
     <FirebaseProvider firebaseApp={firebaseApp} auth={auth} database={database}>
-      {children}
+      <UserRoleProvider>
+        {children}
+      </UserRoleProvider>
     </FirebaseProvider>
   );
 }
