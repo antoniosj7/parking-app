@@ -21,7 +21,7 @@ function SessionRow({ session }: { session: Session }) {
       <TableCell>{formatTimestamp(session.startTime)}</TableCell>
       <TableCell>{formatTimestamp(session.endTime!)}</TableCell>
       <TableCell>{minutes} min</TableCell>
-      <TableCell className="text-right">{session.total ? `$${session.total.toFixed(2)}` : '-'}</TableCell>
+      <TableCell className="text-right">{session.total ? `Q${session.total.toFixed(2)}` : '-'}</TableCell>
     </TableRow>
   );
 }

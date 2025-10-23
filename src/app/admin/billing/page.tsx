@@ -45,7 +45,7 @@ export default function BillingPage() {
             await set(ref(db, 'config/rate'), newRate);
             toast({
                 title: 'Tarifa actualizada',
-                description: `La nueva tarifa por minuto es $${newRate.toFixed(2)}.`,
+                description: `La nueva tarifa por minuto es Q${newRate.toFixed(2)}.`,
             });
         } catch (error: any) {
             toast({
@@ -133,7 +133,7 @@ export default function BillingPage() {
                     ) : (
                         <div className="grid md:grid-cols-3 gap-4 items-end">
                             <div className="grid gap-2">
-                                <Label htmlFor="rate">Tarifa por minuto ($)</Label>
+                                <Label htmlFor="rate">Tarifa por minuto (Q)</Label>
                                 <Input 
                                     id="rate" 
                                     type="number" 

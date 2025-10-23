@@ -79,7 +79,7 @@ export default function StatsPage() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${totalRevenue.toFixed(2)}</div>
+                        <div className="text-2xl font-bold">Q{totalRevenue.toFixed(2)}</div>
                         <p className="text-xs text-muted-foreground">de todas las sesiones completadas</p>
                     </CardContent>
                 </Card>
@@ -117,6 +117,7 @@ export default function StatsPage() {
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip 
+                                formatter={(value: number) => `Q${value.toFixed(2)}`}
                                 contentStyle={{
                                     backgroundColor: 'hsl(var(--background))',
                                     borderColor: 'hsl(var(--border))'

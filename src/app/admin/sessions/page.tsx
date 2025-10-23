@@ -27,7 +27,7 @@ function SessionRow({ session, id }: { session: Session; id: string }) {
         </Badge>
       </TableCell>
        <TableCell>{minutes} min</TableCell>
-       <TableCell className="text-right">{session.total ? `$${session.total.toFixed(2)}` : '-'}</TableCell>
+       <TableCell className="text-right">{session.total ? `Q${session.total.toFixed(2)}` : '-'}</TableCell>
     </TableRow>
   );
 }

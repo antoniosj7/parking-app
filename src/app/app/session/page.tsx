@@ -98,8 +98,8 @@ export default function UserSessionPage() {
                      <div className="flex flex-col items-center justify-center p-6 bg-background/50 rounded-lg">
                         <DollarSign className="h-8 w-8 text-muted-foreground mb-2" />
                         <p className="text-sm font-medium text-muted-foreground">Costo Estimado</p>
-                        <p className="text-4xl font-bold font-mono tracking-tighter">${estimatedCost.toFixed(2)}</p>
-                        <p className="text-xs text-muted-foreground mt-1">(Tarifa: ${rate?.toFixed(2)}/min)</p>
+                        <p className="text-4xl font-bold font-mono tracking-tighter">Q{estimatedCost.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground mt-1">(Tarifa: Q{rate?.toFixed(2)}/min)</p>
                     </div>
                  </CardContent>
             </Card>
