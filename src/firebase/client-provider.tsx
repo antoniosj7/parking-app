@@ -3,6 +3,8 @@
 import { initializeFirebase } from '.';
 import { FirebaseProvider } from './provider';
 import { getApp, getApps } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getDatabase } from 'firebase/database';
 import { UserRoleProvider } from '@/context/user-role-context';
 
 // This provider is used to initialize Firebase on the client side.
@@ -10,10 +12,11 @@ import { UserRoleProvider } from '@/context/user-role-context';
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
   // Check if the app is already initialized to avoid re-initializing
   const appAlreadyInitialized = getApps().length > 0;
+  
   const { firebaseApp, auth, database } = appAlreadyInitialized ? {
       firebaseApp: getApp(),
-      auth: null, // Avoid re-initializing services, they will be picked up by hooks
-      database: null
+      auth: getAuth(getApp()),
+      database: getDatabase(getApp())
   } : initializeFirebase();
   
   return (
