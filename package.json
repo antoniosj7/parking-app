@@ -6,14 +6,13 @@
     "dev": "next dev -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
-    "build": "NODE_ENV=production next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "reset:spots": "tsx tools/reset-spots.ts",
-    "seed:spots": "tsx tools/seed-spots.ts",
-    "set:admin": "tsx tools/set-admin-claim.ts",
-    "deploy:functions": "cd cloud-functions-esp32 && npm install && npm run build && firebase deploy --only functions"
+    "reset:spots": "tsx scripts/reset-spots.ts",
+    "seed:spots": "tsx scripts/seed-spots.ts",
+    "set:admin": "tsx scripts/set-admin-claim.ts"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "1.0.0",

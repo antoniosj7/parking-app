@@ -68,25 +68,20 @@ export const updateSpotStatus = onRequest(
                 }
                 const spotData = spotDoc.data();
                 
-                // Evitar operaciones redundantes si el estado no ha cambiado
-                if (spotData?.occupied === occupied) {
-                    logger.log(`El estado de la plaza ${spotId} ya es ${occupied ? 'ocupado' : 'disponible'}. No se requiere acción.`);
-                    return;
-                }
-
-                const newStatus = occupied ? 'occupied' : 'available';
-                transaction.update(spotRef, {
-                    occupied: occupied,
-                    status: newStatus,
-                    lastChangeAt: admin.firestore.FieldValue.serverTimestamp(),
-                });
-
+                // Si el coche entra (occupied = true)
                 if (occupied) {
-                    // Coche ha entrado: Iniciar una nueva sesión de aparcamiento
-                    const sessionRef = db.collection('sessions').doc(); // Nuevo documento de sesión
-                    const userId = "ESP32_USER"; // O el ID de usuario si estuviera disponible
-                    const userName = "Usuario de Sensor";
+                     // Aunque el estado ya sea 'ocupado', nos aseguramos de que haya una sesión activa.
+                     if (spotData?.occupied === true && spotData?.currentSessionId) {
+                        logger.log(`La plaza ${spotId} ya estaba ocupada con una sesión activa. No se requiere acción.`);
+                        return;
+                    }
+
+                    const newStatus = 'occupied';
+                    const userId = "ESP32_USER"; 
+                    const userName = "Sensor";
+                    const sessionRef = db.collection('sessions').doc();
                     
+                    // Iniciar una nueva sesión de aparcamiento
                     transaction.set(sessionRef, {
                         spotId: spotId,
                         userId: userId,
@@ -95,29 +90,46 @@ export const updateSpotStatus = onRequest(
                         status: 'active',
                     });
                     
-                    // Vincular la sesión a la plaza
+                    // Vincular la sesión a la plaza y actualizar estado
                     transaction.update(spotRef, { 
+                        occupied: true,
+                        status: newStatus,
+                        lastChangeAt: admin.firestore.FieldValue.serverTimestamp(),
                         currentSessionId: sessionRef.id,
                         user: userName
                     });
                     
                     logger.info(`Nueva sesión ${sessionRef.id} iniciada para la plaza ${spotId}.`);
-                } else {
-                    // Coche ha salido: Finalizar la sesión activa
+
+                } else { // Si el coche sale (occupied = false)
+                    if (spotData?.occupied === false) {
+                        logger.log(`El estado de la plaza ${spotId} ya es 'disponible'. No se requiere acción.`);
+                        return;
+                    }
+
                     const currentSessionId = spotData?.currentSessionId;
                     if (currentSessionId) {
                         const sessionRef = db.collection('sessions').doc(currentSessionId);
-                        transaction.update(sessionRef, {
-                            status: 'completed',
-                            endTime: admin.firestore.FieldValue.serverTimestamp()
-                        });
-                        // Desvincular la sesión de la plaza
-                        transaction.update(spotRef, { 
-                            currentSessionId: null,
-                            user: null
-                        });
-                        logger.info(`Sesión ${currentSessionId} finalizada para la plaza ${spotId}.`);
+                        const sessionDoc = await transaction.get(sessionRef);
+
+                        // Solo finaliza la sesión si existe y está activa
+                        if (sessionDoc.exists && sessionDoc.data()?.status === 'active') {
+                            transaction.update(sessionRef, {
+                                status: 'completed',
+                                endTime: admin.firestore.FieldValue.serverTimestamp()
+                            });
+                             logger.info(`Sesión ${currentSessionId} finalizada para la plaza ${spotId}.`);
+                        }
                     }
+                    
+                    // Desvincular la sesión de la plaza y marcarla como disponible
+                    transaction.update(spotRef, { 
+                        occupied: false,
+                        status: 'available',
+                        lastChangeAt: admin.firestore.FieldValue.serverTimestamp(),
+                        currentSessionId: null,
+                        user: null
+                    });
                 }
             });
 
