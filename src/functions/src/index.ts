@@ -1,6 +1,6 @@
 // Autor: Antonio SJ
 import { onDocumentUpdated, onDocumentCreated } from 'firebase-functions/v2/firestore';
-import { onRequest } from 'firebase-functions/v2/https';
+import { onRequest } from 'firebase-functions/v2/https'
 import * as logger from 'firebase-functions/logger';
 import { ALLOWED_SPOTS } from './config/allowed-spots';
 import * as admin from 'firebase-admin';
@@ -68,7 +68,7 @@ export const updateSpotStatus = onRequest(
                 }
                 const spotData = spotDoc.data();
                 
-                // Si el estado no ha cambiado, no hacer nada a menos que falte una sesión.
+                // Si el estado no ha cambiado y la sesión es consistente, no hacer nada.
                 if (spotData?.occupied === occupied && (occupied === false || spotData.currentSessionId)) {
                     logger.log(`El estado de la plaza ${spotId} ya es ${occupied ? 'ocupado' : 'disponible'} y la sesión es consistente. No se requiere acción.`);
                     return;
