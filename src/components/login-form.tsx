@@ -64,7 +64,7 @@ export default function LoginForm() {
         toast({
             variant: "destructive",
             title: "Error de autenticación con Google",
-            description: `${error.code} - ${error.message}`,
+            description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
         });
     } finally {
         setGoogleLoading(false);
@@ -92,7 +92,7 @@ export default function LoginForm() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error.code} - ${error.message}`,
+        description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
       });
     } finally {
         setLoading(false);
@@ -120,7 +120,7 @@ export default function LoginForm() {
         toast({
             variant: "destructive",
             title: "Error de autenticación",
-            description: `${error.code} - ${error.message}`,
+            description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
         });
     } finally {
         setLoading(false);

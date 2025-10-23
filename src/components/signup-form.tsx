@@ -71,7 +71,7 @@ export default function SignupForm() {
       toast({
           variant: "destructive",
           title: "Error de registro",
-          description: `${error.code} - ${error.message}`,
+          description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
       });
     } finally {
         setLoading(false);

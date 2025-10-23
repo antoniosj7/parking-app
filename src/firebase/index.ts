@@ -10,16 +10,25 @@ let app: FirebaseApp;
 let auth: Auth;
 let database: Database;
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDuPtIJt8OI8_P1HI0c2lNAaU5NVnNLeIQ",
+  authDomain: "studio-4441386650-8a8cf.firebaseapp.com",
+  databaseURL: "https://studio-4441386650-8a8cf-default-rtdb.firebaseio.com",
+  projectId: "studio-4441386650-8a8cf",
+  storageBucket: "studio-4441386650-8a8cf.appspot.com",
+  messagingSenderId: "543374686399",
+  appId: "1:543374686399:web:ca8ca41abe3529bcfc6e0a"
+};
+
+if (!firebaseConfig.apiKey) {
+  throw new Error("FIREBASE apiKey está vacía o no se ha configurado.");
+}
+
 // This function ensures that Firebase is initialized only once. (Singleton pattern)
 function initializeFirebase() {
   if (getApps().length > 0) {
     app = getApp();
   } else {
-    const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
-    if (!firebaseConfigStr) {
-      throw new Error("La variable de entorno NEXT_PUBLIC_FIREBASE_CONFIG no está definida.");
-    }
-    const firebaseConfig = JSON.parse(firebaseConfigStr);
     app = initializeApp(firebaseConfig);
   }
   
