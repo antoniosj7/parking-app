@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail, createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
 
@@ -28,8 +28,8 @@ export default function LoginForm() {
   const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@pumg.com');
+  const [password, setPassword] = useState('123456789');
 
   const handleAuthSuccess = async (user: User) => {
     const idTokenResult = await user.getIdTokenResult(true);
@@ -125,6 +125,8 @@ export default function LoginForm() {
             description = "El formato del correo electrónico no es válido.";
         } else if (error.code === 'auth/operation-not-allowed') {
             description = "La operación no está permitida. Por favor, asegúrate de que los proveedores de inicio de sesión (Email/Contraseña, Google) estén activados en la consola de Firebase.";
+        } else {
+          description = "Ha ocurrido un error inesperado al iniciar sesión."
         }
 
 
