@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "reset:spots": "tsx tools/reset-spots.ts",
     "seed:spots": "tsx tools/seed-spots.ts",
-    "set:admin": "tsx tools/set-admin-claim.ts"
+    "set:admin": "tsx tools/set-admin-claim.ts",
+    "deploy:functions": "cd cloud-functions-esp32 && npm install && npm run build && firebase deploy --only functions"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.20.0",
