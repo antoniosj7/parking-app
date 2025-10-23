@@ -1,4 +1,9 @@
 // Autor: Antonio SJ
+// NOTA: La lógica de backend ha sido movida a Realtime Database.
+// Estas funciones de Firestore se mantienen como referencia pero no están activas.
+// El nuevo flujo de datos es: ESP32 --(REST API a RTDB)--> RTDB <-- (Listener en tiempo real) -- Web App
+
+/*
 import { onDocumentUpdated, onDocumentCreated } from 'firebase-functions/v2/firestore';
 import { onRequest } from 'firebase-functions/v2/https';
 import * as logger from 'firebase-functions/logger';
@@ -28,9 +33,6 @@ export const enforceAllowedSpotsOnCreate = onDocumentCreated('spots/{spotId}', e
 export const enforceAllowedSpotsOnUpdate = onDocumentUpdated('spots/{spotId}', enforceAllowedSpotsFn);
 
 
-/**
- * Endpoint HTTP para que dispositivos IoT (como un ESP32) actualicen el estado de una plaza.
- */
 export const updateSpotStatus = onRequest(
     { secrets: ["ESP32_API_KEY"] },
     async (req, res) => {
@@ -141,3 +143,4 @@ export const updateSpotStatus = onRequest(
         }
     }
 );
+*/

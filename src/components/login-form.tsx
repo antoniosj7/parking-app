@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, signInAnonymously } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
 
@@ -32,25 +32,37 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
 
   const handleAuthSuccess = async (user: User) => {
-    // Antonio SJ: Lógica de roles segura.
-    // 1. Obtenemos el token de ID del usuario de Firebase.
-    // 2. El token contiene 'claims' (reclamaciones) personalizadas. Buscamos la claim 'role'.
-    // 3. Si un usuario no tiene la claim 'role' (como todos los nuevos usuarios, incluidos los de Google),
-    //    se le asigna por defecto el rol 'user'.
-    // 4. El único que puede añadir la claim 'role: admin' es un administrador a través de las herramientas del servidor (set-admin-claim.ts).
     const idTokenResult = await user.getIdTokenResult(true);
     const role = (idTokenResult.claims.role as string) || 'user';
     
     setUserRole(role as 'admin' | 'user');
     toast({
         title: "Login exitoso",
-        description: `Bienvenido, ${user.displayName || 'usuario'}. Redirigiendo...`,
+        description: `Bienvenido, ${user.displayName || user.email || 'usuario'}. Redirigiendo...`,
     });
 
     const targetPath = role === 'admin' ? '/admin' : '/grid';
     router.push(targetPath);
     router.refresh();
   };
+
+  const handleAnonymousSignIn = async () => {
+    if (!auth) return;
+    setLoading(true);
+    try {
+        const userCredential = await signInAnonymously(auth);
+        await handleAuthSuccess(userCredential.user);
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Error de autenticación",
+            description: "No se pudo iniciar sesión anónimamente.",
+        });
+    } finally {
+        setLoading(false);
+    }
+  }
+
 
   const handleGoogleSignIn = async () => {
     if (!auth) {
@@ -79,30 +91,10 @@ export default function LoginForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
-
-    // ---- MOCK USERS FOR DEVELOPMENT ----
-    // This allows testing admin/user roles without real Firebase users.
-    // This code DOES NOT run in production.
-    if (process.env.NODE_ENV === 'development') {
-      if (email === 'admin@pumg.com' && password === 'admin') {
-        setUserRole('admin');
-        toast({ title: "Login de prueba exitoso", description: "Iniciaste como Administrador." });
-        router.push('/admin');
-        router.refresh();
-        setLoading(false);
-        return;
-      }
-      if (email === 'user@pumg.com' && password === 'user') {
-        setUserRole('user');
-        toast({ title: "Login de prueba exitoso", description: "Iniciaste como Usuario." });
-        router.push('/grid');
-        router.refresh();
-        setLoading(false);
-        return;
-      }
+    
+    if (email === 'admin@pumg.com' && password === 'admin') {
+      setLoading(true);
     }
-    // ---- END MOCK USERS ----
 
     if (!auth) {
         toast({
@@ -157,7 +149,7 @@ export default function LoginForm() {
             </div>
             <div className="my-4 flex items-center">
               <Separator className="flex-1" />
-              <span className="mx-4 text-xs text-muted-foreground">O CONTINÚA CON</span>
+              <span className="mx-4 text-xs text-muted-foreground">O INICIA SESIÓN CON EMAIL</span>
               <Separator className="flex-1" />
             </div>
           <form className="grid gap-4" onSubmit={handleSubmit}>
@@ -168,6 +160,7 @@ export default function LoginForm() {
                 name="email"
                 type="text"
                 autoComplete="email"
+                placeholder="admin@pumg.com"
                 required
                 disabled={loading || googleLoading}
                 value={email}
@@ -183,6 +176,7 @@ export default function LoginForm() {
                 name="password" 
                 type="password" 
                 autoComplete="current-password"
+                placeholder="••••••••"
                 required 
                 disabled={loading || googleLoading}
                 value={password}
@@ -191,7 +185,10 @@ export default function LoginForm() {
             </div>
             <Button type="submit" className="w-full mt-2" disabled={loading || googleLoading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión como Admin'}
+            </Button>
+             <Button type="button" variant="secondary" className="w-full" onClick={handleAnonymousSignIn} disabled={loading || googleLoading}>
+                {loading ? 'Entrando...' : 'Entrar como invitado'}
             </Button>
           </form>
           <div className="mt-6 text-center text-sm">

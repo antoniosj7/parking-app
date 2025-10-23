@@ -9,12 +9,11 @@ import { useUserRole } from '@/context/user-role-context';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
-    LayoutDashboard, User, History, BarChart2, Users, LogOut,
-    ChevronLeft, ChevronRight, ParkingCircle, Settings, Activity
+    LayoutDashboard, LogOut,
+    ChevronLeft, ChevronRight, ParkingCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { Logo } from './logo';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
@@ -67,25 +66,13 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
   return content;
 };
 
-const adminLinks = {
-    dashboard: { href: '/admin', icon: <LayoutDashboard size={20} />, text: 'Panel Principal' },
-    parkingView: { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
-};
-
-const adminManagementLinks = [
-  { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
+const adminLinks = [
+    { href: '/admin', icon: <LayoutDashboard size={20} />, text: 'Panel Principal' },
+    { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
 ];
-
-const adminAnalyticsLinks = [
-  { href: '/admin/statistics', icon: <BarChart2 size={20} />, text: 'Estadísticas' },
-  { href: '/admin/activity', icon: <Activity size={20} />, text: 'Actividad Reciente' },
-];
-
 
 const userLinks = [
-  { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Lugares Disponibles' },
-  { href: '/my-account', icon: <User size={20} />, text: 'Mi Cuenta' },
-  { href: '/history', icon: <History size={20} />, text: 'Historial de Uso' },
+  { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
 ];
 
 interface MainNavProps {
@@ -125,6 +112,8 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
     }
   };
 
+  const links = isAdmin ? adminLinks : userLinks;
+
   return (
     <aside className={cn(
         "flex h-screen flex-col border-r bg-card transition-all duration-300 ease-in-out z-20 sticky top-0",
@@ -156,41 +145,9 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
         </div>
 
         <nav className="flex-1 space-y-2 p-3 mt-4 overflow-y-auto">
-            {isAdmin ? (
-                 <Accordion type="multiple" defaultValue={['item-1', 'item-2', 'item-3']} className="w-full">
-                    {isCollapsed ? (
-                        <>
-                             <NavLink {...adminLinks.dashboard} isCollapsed={isCollapsed} pathname={pathname} />
-                             <NavLink {...adminLinks.parkingView} isCollapsed={isCollapsed} pathname={pathname} />
-                             {adminManagementLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
-                             {adminAnalyticsLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
-                        </>
-                    ) : (
-                        <>
-                           <NavLink {...adminLinks.dashboard} isCollapsed={isCollapsed} pathname={pathname} />
-                           <NavLink {...adminLinks.parkingView} isCollapsed={isCollapsed} pathname={pathname} />
-
-                           <AccordionItem value="item-2" className="border-none px-4 pt-4 pb-2">
-                             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Gestión</h3>
-                           </AccordionItem>
-                           <div className="space-y-1">
-                            {adminManagementLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
-                           </div>
-                           
-                           <AccordionItem value="item-3" className="border-none px-4 pt-4 pb-2">
-                             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Análisis</h3>
-                           </AccordionItem>
-                           <div className="space-y-1">
-                            {adminAnalyticsLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
-                           </div>
-                        </>
-                    )}
-                 </Accordion>
-            ) : (
-                <div className="space-y-1">
-                 {userLinks.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
-                </div>
-            )}
+           <div className="space-y-1">
+              {links.map(link => <NavLink key={link.href} {...link} isCollapsed={isCollapsed} pathname={pathname} />)}
+            </div>
         </nav>
         
         <div className="mt-auto border-t p-3">
