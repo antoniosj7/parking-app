@@ -8,16 +8,10 @@ import ParkingSpotSkeleton from './parking-spot-skeleton';
 export default function ParkingGrid() {
   const allowedSpotsArray = Array.from(ALLOWED_SPOTS);
 
-  // Create hooks for each spot to get real-time occupancy from RTDB
-  const spotData = allowedSpotsArray.map(spotId => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data, loading } = useRtdbValue<boolean>(`/${spotId}`);
-    return { id: spotId, occupied: data, loading };
-  });
+  // Get all spots data in a single hook for efficiency
+  const { data: spots, loading: spotsLoading } = useRtdbValue<Record<string, { occupied: boolean }>>('/spots');
 
-  const isLoading = spotData.some(s => s.loading);
-
-  if (isLoading && allowedSpotsArray.length > 0) {
+  if (spotsLoading) {
     return (
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
         {allowedSpotsArray.map(id => (
@@ -30,21 +24,21 @@ export default function ParkingGrid() {
   if (allowedSpotsArray.length === 0) {
     return (
       <div className="text-center text-muted-foreground">
-        No hay plazas de aparcamiento configuradas. Por favor, revise la variable de entorno `NEXT_PUBLIC_ALLOWED_SPOTS_JSON`.
+        No hay plazas de aparcamiento configuradas.
       </div>
     );
   }
 
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
-      {spotData.map(({ id, occupied }) => (
-        // We only pass the id and the real-time occupied status.
-        // The ParkingSpot component will handle its own presentation.
-        <ParkingSpot 
-          key={id} 
-          spot={{ id, occupied: !!occupied }} 
-        />
-      ))}
+      {allowedSpotsArray.map(spotId => {
+        const spotData = spots ? spots[spotId] : null;
+        const spot: ParkingSpotType = {
+          id: spotId,
+          occupied: spotData ? spotData.occupied : false,
+        };
+        return <ParkingSpot key={spot.id} spot={spot} />;
+      })}
     </div>
   );
 }

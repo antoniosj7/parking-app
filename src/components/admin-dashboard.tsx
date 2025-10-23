@@ -7,24 +7,26 @@ import { useRtdbValue } from "@/firebase";
 import { Skeleton } from "./ui/skeleton";
 
 function SpotStatus({ spotId }: { spotId: string }) {
-  const { data: occupied, loading } = useRtdbValue<boolean>(`/${spotId}`);
+  const { data: spot, loading } = useRtdbValue<any>(`/spots/${spotId}`);
 
   if (loading) {
     return <Skeleton className="w-24 h-6" />;
   }
 
+  const isOccupied = spot && spot.occupied;
+
   return (
-    <Badge variant={occupied ? 'destructive' : 'default'} className={!occupied ? 'bg-green-500' : ''}>
-      {occupied ? 'Ocupado' : 'Libre'}
+    <Badge variant={isOccupied ? 'destructive' : 'default'} className={!isOccupied ? 'bg-green-500' : ''}>
+      {isOccupied ? 'Ocupado' : 'Libre'}
     </Badge>
   );
 }
 
 export default function AdminDashboard() {
   const allowedSpotsList = Array.from(ALLOWED_SPOTS);
-  const { data: spotsData, loading: spotsLoading } = useRtdbValue<Record<string, boolean>>('/');
+  const { data: spotsData, loading: spotsLoading } = useRtdbValue<Record<string, { occupied: boolean }>>('/spots');
   
-  const occupiedCount = spotsData ? Object.values(spotsData).filter(Boolean).length : 0;
+  const occupiedCount = spotsData ? Object.values(spotsData).filter(s => s.occupied).length : 0;
   const availableCount = allowedSpotsList.length - occupiedCount;
 
   return (
@@ -52,25 +54,6 @@ export default function AdminDashboard() {
                     {spotsLoading ? <Skeleton className="h-6 w-10"/> : <div className="text-2xl font-bold">{occupiedCount}</div>}
                 </div>
             </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Estado en Tiempo Real (RTDB)</CardTitle>
-          <CardDescription>
-            Estado actual de las plazas leído directamente desde Realtime Database.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4">
-            {allowedSpotsList.map(spotId => (
-              <div key={spotId} className="flex items-center gap-3 border p-3 rounded-lg">
-                <span className="font-bold text-lg">{spotId}:</span>
-                <SpotStatus spotId={spotId} />
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
     </div>

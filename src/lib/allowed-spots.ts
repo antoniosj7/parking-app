@@ -1,22 +1,18 @@
 // Autor: Antonio SJ
+import config from './allowed-spots.json';
 
 /**
- * Lee la variable de entorno pública NEXT_PUBLIC_ALLOWED_SPOTS_JSON, la parsea
- * y la expone como un Set de strings para una búsqueda eficiente en el cliente.
+ * Lee la configuración de plazas desde un archivo JSON estático
+ * para evitar problemas con variables de entorno durante el build.
  */
 let spots: Set<string>;
 
 try {
-  // El valor por defecto es una cadena JSON válida.
-  const allowedSpotsJson = process.env.NEXT_PUBLIC_ALLOWED_SPOTS_JSON || '["P1","P2","P3","P4"]';
-  
-  // Limpiamos posibles comillas extra que puedan venir del entorno
-  const cleanedJson = allowedSpotsJson.replace(/^'|'$/g, '');
-
-  const parsedSpots: string[] = JSON.parse(cleanedJson);
+  // Asegurarnos de que el array existe y es un array.
+  const parsedSpots: string[] = Array.isArray(config.spots) ? config.spots : [];
   spots = new Set(parsedSpots);
 } catch (error) {
-  console.error('Error al parsear NEXT_PUBLIC_ALLOWED_SPOTS_JSON. Usando un set vacío.', error);
+  console.error('Error al procesar allowed-spots.json. Usando un set vacío.', error);
   spots = new Set();
 }
 
