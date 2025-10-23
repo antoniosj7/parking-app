@@ -18,6 +18,7 @@ try {
     admin.initializeApp({
         credential: admin.credential.applicationDefault(),
         projectId: firebaseConfig.projectId,
+        databaseURL: firebaseConfig.databaseURL, // Importante para escribir en RTDB
     });
     console.log('Firebase Admin SDK inicializado correctamente.');
 } catch (error: any) {
@@ -37,26 +38,38 @@ try {
 }
 
 
-async function setAdminClaim(email: string) {
+async function setAdminRole(email: string) {
     if (!email) {
         console.error('Error: Debes proporcionar un email como argumento.');
         console.log('Uso: npm run set:admin -- <email>');
-        return;
+        process.exit(1);
     }
+
+    const db = admin.database();
 
     try {
         console.log(`Buscando usuario con email: ${email}...`);
         const user = await admin.auth().getUserByEmail(email);
 
-        if (user.customClaims && (user.customClaims as any).role === 'admin') {
-            console.log(`El usuario ${email} (UID: ${user.uid}) ya tiene el rol de administrador.`);
+        const userRoleRef = db.ref(`users/${user.uid}/role`);
+        const currentRtdbRole = (await userRoleRef.once('value')).val();
+
+        if (user.customClaims && (user.customClaims as any).role === 'admin' && currentRtdbRole === 'admin') {
+            console.log(`El usuario ${email} (UID: ${user.uid}) ya tiene el rol de administrador en Auth y RTDB.`);
             return;
         }
 
         console.log(`Asignando rol de "admin" al usuario ${email} (UID: ${user.uid})...`);
+        
+        // 1. Asignar el Custom Claim en Firebase Auth
         await admin.auth().setCustomUserClaims(user.uid, { role: 'admin' });
+        console.log('Éxito: Custom Claim "admin" asignado en Firebase Auth.');
 
-        console.log('¡Éxito! El usuario ahora es administrador.');
+        // 2. Asignar el rol en Realtime Database (CRÍTICO PARA EL FRONTEND)
+        await userRoleRef.set('admin');
+        console.log('Éxito: Rol "admin" asignado en Realtime Database en la ruta /users/' + user.uid);
+
+        console.log('\n¡Corrección completada! El usuario ahora es administrador en todos los sistemas.');
         console.log('El usuario deberá volver a iniciar sesión para que los cambios surtan efecto.');
 
     } catch (error: any) {
@@ -75,4 +88,4 @@ async function setAdminClaim(email: string) {
 // Obtener el email de los argumentos de la línea de comandos
 const email = process.argv[2];
 
-setAdminClaim(email);
+setAdminRole(email);
