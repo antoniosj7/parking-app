@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useUser } from '@/firebase';
+import { useUser, useDatabase } from '@/firebase';
+import { ref, onValue } from 'firebase/database';
 
 type UserRole = 'admin' | 'user' | null;
 
@@ -15,31 +16,35 @@ const UserRoleContext = createContext<UserRoleContextType | undefined>(undefined
 
 export function UserRoleProvider({ children }: { children: ReactNode }) {
   const [userRole, setUserRole] = useState<UserRole>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const { user, loading: userLoading } = useUser();
+  const database = useDatabase();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(userLoading);
     if (userLoading) {
+      setIsLoading(true);
       return;
     }
     
-    if (user) {
-      // Para usuarios reales, obtener el rol del token de Firebase.
-      user.getIdTokenResult().then((idTokenResult) => {
-        const role = (idTokenResult.claims.role as string) || 'user';
-        setUserRole(role as UserRole);
-      }).catch((error) => {
-        console.error('Error obteniendo rol del token:', error);
-        setUserRole('user'); // Fallback a user
-      }).finally(() => {
+    if (user && database) {
+      // Get role from Realtime Database
+      const userRoleRef = ref(database, `users/${user.uid}/role`);
+      const unsubscribe = onValue(userRoleRef, (snapshot) => {
+        const role = snapshot.val() || 'user';
+        setUserRole(role);
+        setIsLoading(false);
+      }, (error) => {
+        console.error('Error fetching user role from RTDB:', error);
+        setUserRole('user'); // Fallback to user
         setIsLoading(false);
       });
+
+      return () => unsubscribe();
     } else {
       setUserRole(null);
       setIsLoading(false);
     }
-  }, [user, userLoading]);
+  }, [user, userLoading, database]);
 
   return (
     <UserRoleContext.Provider value={{ userRole, setUserRole, isLoading }}>

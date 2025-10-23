@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
     LayoutDashboard, LogOut,
-    ChevronLeft, ChevronRight, ParkingCircle
+    ChevronLeft, ChevronRight, ParkingCircle, Users
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
@@ -69,6 +69,7 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
 const adminLinks = [
     { href: '/admin', icon: <LayoutDashboard size={20} />, text: 'Panel Principal' },
     { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
+    { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
 ];
 
 const userLinks = [
@@ -89,7 +90,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
   const { toast } = useToast();
   
   const isAdmin = userRole === 'admin';
-  const userInitial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
+  const userInitial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email ? user.email.charAt(0).toUpperCase() : 'U');
 
   const handleLogout = async () => {
     try {
