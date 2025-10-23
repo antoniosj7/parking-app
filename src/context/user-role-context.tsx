@@ -8,7 +8,6 @@ type UserRole = 'admin' | 'user' | null;
 
 interface UserRoleContextType {
   userRole: UserRole;
-  setUserRole: (role: UserRole) => void;
   isLoading: boolean;
 }
 
@@ -30,7 +29,7 @@ export function UserRoleProvider({ children }: { children: ReactNode }) {
       // Get role from Realtime Database
       const userRoleRef = ref(database, `users/${user.uid}/role`);
       const unsubscribe = onValue(userRoleRef, (snapshot) => {
-        const role = snapshot.val() || 'user';
+        const role = snapshot.val() as 'admin' | 'user' || 'user';
         setUserRole(role);
         setIsLoading(false);
       }, (error) => {
@@ -47,7 +46,7 @@ export function UserRoleProvider({ children }: { children: ReactNode }) {
   }, [user, userLoading, database]);
 
   return (
-    <UserRoleContext.Provider value={{ userRole, setUserRole, isLoading }}>
+    <UserRoleContext.Provider value={{ userRole, isLoading }}>
       {children}
     </UserRoleContext.Provider>
   );

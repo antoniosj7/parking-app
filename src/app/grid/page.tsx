@@ -1,17 +1,8 @@
-import ParkingGrid from "@/components/parking-grid";
+// This page is now part of the user-facing app area.
+// The content is now served from /app/parking/page.tsx
+// This file can be deleted or kept as a redirect.
+import { redirect } from 'next/navigation';
 
-export default function GridPage() {
-  return (
-    <div className="flex-1 space-y-4">
-        <div className="flex items-center justify-between space-y-2 pb-4">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight font-headline">Parqueo en Tiempo Real</h2>
-            <p className="text-muted-foreground">
-              Selecciona una plaza disponible para ver más detalles.
-            </p>
-          </div>
-        </div>
-      <ParkingGrid />
-    </div>
-  );
+export default function OldGridPage() {
+    redirect('/app/parking');
 }

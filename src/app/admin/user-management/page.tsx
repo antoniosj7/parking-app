@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle, Loader2 } from "lucide-react";
 import { useDatabase, useAuth } from "@/firebase";
-import { ref, onValue, set, push, child } from "firebase/database";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ref, onValue, set } from "firebase/database";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { type User } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
@@ -56,6 +56,7 @@ function CreateUserForm({ onUserCreated }: { onUserCreated: () => void }) {
       // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      await updateProfile(user, { displayName });
 
       // 2. Save user data (including role) in Realtime Database
       const userData: Omit<User, 'uid'> = { displayName, email, role };
@@ -64,7 +65,11 @@ function CreateUserForm({ onUserCreated }: { onUserCreated: () => void }) {
       toast({ title: "Éxito", description: "Usuario creado correctamente." });
       onUserCreated(); // Close dialog
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
+       toast({
+        variant: "destructive",
+        title: "Error al crear usuario",
+        description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
+      });
     } finally {
       setLoading(false);
     }
@@ -127,10 +132,14 @@ export default function UserManagementPage() {
         setUsers([]);
       }
       setLoading(false);
+    }, (error) => {
+      console.error(error);
+      setLoading(false);
+      toast({ variant: "destructive", title: "Error", description: "No se pudo cargar la lista de usuarios." });
     });
 
     return () => unsubscribe();
-  }, [db]);
+  }, [db, toast]);
 
   const handleRoleChange = async (uid: string, role: 'admin' | 'user') => {
     if (!db) return;

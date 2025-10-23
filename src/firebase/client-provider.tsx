@@ -14,7 +14,7 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
     try {
         console.info("[FIREBASE CFG]", getApp().options);
     } catch (e) {
-        console.error("No se pudo obtener la configuración de Firebase:", e);
+        // This might fail on first render, it's ok.
     }
   }, []);
 

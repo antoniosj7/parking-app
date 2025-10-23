@@ -1,6 +1,4 @@
 'use client';
-// Antonio SJ
-
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
@@ -11,7 +9,7 @@ import { cn } from '@/lib/utils';
 import {
     LayoutDashboard, LogOut,
     ChevronLeft, ChevronRight, ParkingCircle, Users,
-    History, BarChart, FileText, Settings, User
+    History, BarChart, FileText, Settings, User as UserIcon
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
@@ -27,7 +25,7 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
-  const isActive = pathname === href || (pathname.startsWith(href) && href !== '/');
+  const isActive = pathname.startsWith(href);
 
   const content = (
     <Link
@@ -36,7 +34,7 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
         'flex items-center gap-4 rounded-lg text-sm font-medium transition-all duration-200',
         'group',
         isActive
-          ? 'bg-primary/10 text-primary'
+          ? 'bg-primary/10 text-primary shadow-inner_sm ring-1 ring-primary/20'
           : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground',
         isCollapsed ? 'justify-center px-2 py-3' : 'px-4 py-3'
       )}
@@ -68,8 +66,7 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
 };
 
 const adminLinks = [
-    { href: '/admin', icon: <LayoutDashboard size={20} />, text: 'Panel Principal' },
-    { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Parqueo en Vivo' },
+    { href: '/admin/parking', icon: <LayoutDashboard size={20} />, text: 'Parqueo' },
     { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
     { href: '/admin/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
     { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
@@ -78,25 +75,25 @@ const adminLinks = [
 ];
 
 const userLinks = [
-  { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
-  { href: '/me/sessions', icon: <History size={20} />, text: 'Mis Sesiones' },
-  { href: '/me/profile', icon: <User size={20} />, text: 'Mi Perfil' },
+  { href: '/app/parking', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
+  { href: '/app/session', icon: <History size={20} />, text: 'Mi Sesión' },
+  { href: '/app/history', icon: <History size={20} />, text: 'Mi Historial' },
+  { href: '/app/profile', icon: <UserIcon size={20} />, text: 'Mi Perfil' },
 ];
 
 interface MainNavProps {
   isCollapsed: boolean;
   toggleCollapse: () => void;
+  role: 'admin' | 'user';
 }
 
-export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
-  const { userRole, setUserRole } = useUserRole();
+export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavProps) {
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
   
-  const isAdmin = userRole === 'admin';
   const userInitial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email ? user.email.charAt(0).toUpperCase() : 'U');
 
   const handleLogout = async () => {
@@ -104,13 +101,11 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
       if (auth) {
         await signOut(auth);
       }
-      setUserRole(null);
       toast({
         title: "Sesión cerrada",
         description: "Has cerrado sesión correctamente.",
       });
       router.push('/');
-      router.refresh(); 
     } catch (error) {
       toast({
         variant: "destructive",
@@ -119,9 +114,10 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
       });
     }
   };
-
-  const links = isAdmin ? adminLinks : userLinks;
-  const homeHref = isAdmin ? '/admin' : '/grid';
+  
+  const links = role === 'admin' ? adminLinks : userLinks;
+  const homeHref = role === 'admin' ? '/admin/parking' : '/app/parking';
+  const title = role === 'admin' ? 'Panel Admin' : 'PUMG';
 
   return (
     <aside className={cn(
@@ -131,7 +127,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
         <div className={cn("flex items-center border-b h-16 shrink-0", isCollapsed ? 'justify-center px-2' : 'justify-between px-4')}>
             <Link href={homeHref} className={cn("flex items-center gap-2 overflow-hidden", isCollapsed ? 'justify-center' : '')}>
                 <Logo className='h-8 w-8 text-primary' />
-                <span className={cn('font-bold text-lg font-headline whitespace-nowrap transition-opacity', isCollapsed ? 'sr-only' : 'delay-100')}>PUMG</span>
+                <span className={cn('font-bold text-lg font-headline whitespace-nowrap transition-opacity', isCollapsed ? 'sr-only' : 'delay-100')}>{title}</span>
             </Link>
              <button onClick={toggleCollapse} className={cn("hidden md:flex items-center justify-center p-1 rounded-full text-muted-foreground hover:bg-muted transition-colors", isCollapsed ? 'opacity-0 pointer-events-none' : '')}>
                 <ChevronLeft size={20} />

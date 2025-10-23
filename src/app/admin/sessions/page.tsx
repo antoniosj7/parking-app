@@ -13,9 +13,9 @@ function SessionRow({ session }: { session: Session }) {
   const startTime = new Date(session.startTime);
   const endTime = session.endTime ? new Date(session.endTime) : null;
   
-  const duration = endTime 
-    ? formatDistanceToNow(startTime, { locale: es, addSuffix: false, unit: 'minute' })
-    : formatDistanceToNow(startTime, { locale: es, addSuffix: true });
+  const duration = endTime && startTime
+    ? formatDistanceToNow(endTime, { locale: es, addSuffix: false, unit: 'minute', referenceDate: startTime })
+    : (startTime ? formatDistanceToNow(startTime, { locale: es, addSuffix: true }) : 'N/A');
 
   return (
     <TableRow>
@@ -40,14 +40,14 @@ function SessionRow({ session }: { session: Session }) {
       </TableCell>
       <TableCell>{duration}</TableCell>
       <TableCell className="text-right">
-        {session.total !== null ? `$${session.total.toFixed(2)}` : '---'}
+        {session.total !== null && session.total !== undefined ? `$${session.total.toFixed(2)}` : '---'}
       </TableCell>
     </TableRow>
   );
 }
 
 export default function SessionsPage() {
-  const { data: sessionsData, loading, error } = useRtdbValue<Record<string, Session>>('/sessions');
+  const { data: sessionsData, loading, error } = useRtdbValue<Record<string, Session>>('sessions');
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {

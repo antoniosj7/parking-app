@@ -17,29 +17,20 @@ import { Logo } from "@/components/logo"
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useUserRole } from "@/context/user-role-context";
-import { createUserWithEmailAndPassword, updateProfile, type User } from "firebase/auth";
-import { useAuth } from "@/firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useAuth, useDatabase } from "@/firebase";
+import { ref, set } from "firebase/database";
+import { type User } from "@/lib/types";
 
 export default function SignupForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { setUserRole } = useUserRole();
   const auth = useAuth();
+  const db = useDatabase();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-
-  const handleAuthSuccess = (user: User) => {
-    setUserRole('user'); // New users are always 'user' role
-    toast({
-      title: "Registro exitoso",
-      description: `Bienvenido, ${user.displayName || user.email}. Redirigiendo...`,
-    });
-    router.push('/grid'); // Redirect to the main grid for users
-    router.refresh();
-  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,7 +44,7 @@ export default function SignupForm() {
     }
     setLoading(true);
 
-    if (!auth) {
+    if (!auth || !db) {
         toast({
             variant: "destructive",
             title: "Error de configuración",
@@ -65,8 +56,22 @@ export default function SignupForm() {
     
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, { displayName });
-        handleAuthSuccess(userCredential.user);
+        const user = userCredential.user;
+        await updateProfile(user, { displayName });
+
+        // Guardar la información del usuario en la Realtime Database con rol "user"
+        const userData: Omit<User, 'uid'> = {
+          displayName: displayName,
+          email: user.email!,
+          role: 'user', // Los nuevos usuarios siempre son 'user'
+        };
+        await set(ref(db, `users/${user.uid}`), userData);
+        
+        toast({
+          title: "Registro exitoso",
+          description: `Bienvenido, ${displayName}. Redirigiendo...`,
+        });
+        router.push('/app/parking'); // Redirigir al área de usuario
     } catch (error: any) {
       toast({
           variant: "destructive",

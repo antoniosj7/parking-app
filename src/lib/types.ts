@@ -1,5 +1,3 @@
-// Antonio SJ
-
 // Representa el estado en vivo de una única plaza de aparcamiento desde RTDB.
 export type ParkingSpot = {
   id: string;

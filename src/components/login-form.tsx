@@ -16,34 +16,43 @@ import { Logo } from "@/components/logo"
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useUserRole } from "@/context/user-role-context";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
-import { useAuth } from "@/firebase";
+import { useAuth, useDatabase } from "@/firebase";
 import { Separator } from "./ui/separator";
+import { ref, get } from "firebase/database";
 
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { setUserRole } = useUserRole();
   const auth = useAuth();
+  const db = useDatabase();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleAuthSuccess = async (user: User) => {
-    const idTokenResult = await user.getIdTokenResult(true); // Force refresh
-    const role = (idTokenResult.claims.role as string) || 'user';
+    if (!db) {
+        toast({
+            variant: "destructive",
+            title: "Error de base de datos",
+            description: "No se pudo obtener el rol del usuario.",
+        });
+        return;
+    }
+    // Obtener el rol desde Realtime Database
+    const userRoleRef = ref(db, `users/${user.uid}/role`);
+    const snapshot = await get(userRoleRef);
+    const role = snapshot.val() || 'user';
     
-    setUserRole(role as 'admin' | 'user');
     toast({
         title: "Login exitoso",
         description: `Bienvenido, ${user.displayName || user.email || 'usuario'}. Redirigiendo...`,
     });
 
-    const targetPath = role === 'admin' ? '/admin' : '/grid';
+    // Redirigir según el rol
+    const targetPath = role === 'admin' ? '/admin/parking' : '/app/parking';
     router.push(targetPath);
-    router.refresh();
   };
 
   const handleGoogleSignIn = async () => {
@@ -59,11 +68,13 @@ export default function LoginForm() {
     const provider = new GoogleAuthProvider();
     try {
         const result = await signInWithPopup(auth, provider);
+        // Aquí deberíamos registrar al usuario en nuestra RTDB si es la primera vez
+        // Por ahora, asumimos que ya existe o lo manejamos en el `handleAuthSuccess`
         await handleAuthSuccess(result.user);
     } catch (error: any) {
         toast({
             variant: "destructive",
-            title: "Error de autenticación con Google",
+            title: "Error con Google",
             description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
         });
     } finally {

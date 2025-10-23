@@ -16,7 +16,6 @@ const firebaseConfig = {
   databaseURL: "https://studio-4441386650-8a8cf-default-rtdb.firebaseio.com",
   projectId: "studio-4441386650-8a8cf",
   storageBucket: "studio-4441386650-8a8cf.appspot.com",
-  messagingSenderId: "543374686399",
   appId: "1:543374686399:web:ca8ca41abe3529bcfc6e0a"
 };
 
@@ -26,10 +25,10 @@ if (!firebaseConfig.apiKey) {
 
 // This function ensures that Firebase is initialized only once. (Singleton pattern)
 function initializeFirebase() {
-  if (getApps().length > 0) {
-    app = getApp();
-  } else {
+  if (getApps().length === 0) {
     app = initializeApp(firebaseConfig);
+  } else {
+    app = getApp();
   }
   
   auth = getAuth(app);
