@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, signInAnonymously } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
 
@@ -46,24 +46,6 @@ export default function LoginForm() {
     router.refresh();
   };
 
-  const handleAnonymousSignIn = async () => {
-    if (!auth) return;
-    setLoading(true);
-    try {
-        const userCredential = await signInAnonymously(auth);
-        await handleAuthSuccess(userCredential.user);
-    } catch (error) {
-        toast({
-            variant: "destructive",
-            title: "Error de autenticación",
-            description: "No se pudo iniciar sesión anónimamente.",
-        });
-    } finally {
-        setLoading(false);
-    }
-  }
-
-
   const handleGoogleSignIn = async () => {
     if (!auth) {
         toast({
@@ -79,10 +61,14 @@ export default function LoginForm() {
         const result = await signInWithPopup(auth, provider);
         await handleAuthSuccess(result.user);
     } catch (error: any) {
+        let description = "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.";
+        if (error.code === 'auth/operation-not-allowed') {
+            description = "Inicio de sesión con Google no habilitado. Por favor, activa el proveedor de Google en la consola de Firebase.";
+        }
         toast({
             variant: "destructive",
             title: "Error de autenticación con Google",
-            description: "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.",
+            description: description,
         });
     } finally {
         setGoogleLoading(false);
@@ -112,7 +98,10 @@ export default function LoginForm() {
             description = "El correo electrónico o la contraseña son incorrectos.";
         } else if (error.code === 'auth/invalid-email') {
             description = "El formato del correo electrónico no es válido.";
+        } else if (error.code === 'auth/operation-not-allowed') {
+            description = "La operación no está permitida. Por favor, asegúrate de que los proveedores de inicio de sesión (Email/Contraseña, Google) estén activados en la consola de Firebase.";
         }
+
 
         toast({
             variant: "destructive",
@@ -182,10 +171,7 @@ export default function LoginForm() {
             </div>
             <Button type="submit" className="w-full mt-2" disabled={loading || googleLoading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión como Admin'}
-            </Button>
-             <Button type="button" variant="secondary" className="w-full" onClick={handleAnonymousSignIn} disabled={loading || googleLoading}>
-                {loading ? 'Entrando...' : 'Entrar como invitado'}
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
           </form>
         </CardContent>
