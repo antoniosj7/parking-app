@@ -30,19 +30,19 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const isUserArea = pathname.startsWith('/app');
 
   if (userRole === 'admin' && !isAdminArea) {
-    // Si es admin pero está fuera del área de admin, redirigir a su panel
+    // Si es admin pero está fuera del área de admin (ej. en /app o /), redirigir a su panel
     if (typeof window !== 'undefined') {
       router.push('/admin/parking');
     }
-    return <Loading />;
+    return <Loading />; // Muestra loading mientras redirige para evitar renderizar el layout incorrecto
   }
 
   if (userRole === 'user' && !isUserArea) {
-    // Si es usuario normal pero está fuera de su área, redirigir a su panel
+    // Si es usuario normal pero está fuera de su área (ej. en /admin o /), redirigir a su panel
     if (typeof window !== 'undefined') {
       router.push('/app/parking');
     }
-    return <Loading />;
+    return <Loading />; // Muestra loading mientras redirige
   }
 
   // Si el rol y el área coinciden, o es una página pública permitida (lo cual ya se manejó), renderizar.
