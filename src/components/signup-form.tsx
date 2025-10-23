@@ -71,7 +71,7 @@ export default function SignupForm() {
           title: "Registro exitoso",
           description: `Bienvenido, ${displayName}. Redirigiendo...`,
         });
-        router.push('/app/parking'); // Redirigir al área de usuario
+        // Let AuthLayout handle the redirection
     } catch (error: any) {
       toast({
           variant: "destructive",

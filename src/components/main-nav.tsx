@@ -66,7 +66,7 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
 
 const adminLinks = [
     { href: '/admin/parking', icon: <LayoutDashboard size={20} />, text: 'Parqueo' },
-    // { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
+    { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
     { href: '/admin/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
     { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
     { href: '/admin/stats', icon: <BarChart size={20} />, text: 'Estadísticas' },
@@ -117,6 +117,7 @@ export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavPr
   const links = role === 'admin' ? adminLinks : userLinks;
   const homeHref = role === 'admin' ? '/admin/parking' : '/app/parking';
   const title = role === 'admin' ? 'Panel Admin' : 'PUMG';
+  const profileName = role === 'admin' ? 'Administrador' : (user?.displayName || 'Usuario');
 
   return (
     <aside className={cn(
@@ -160,7 +161,7 @@ export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavPr
                 <AvatarFallback className="bg-primary/20 text-primary font-semibold">{userInitial}</AvatarFallback>
              </Avatar>
              <div className={cn("flex flex-col overflow-hidden", isCollapsed ? "sr-only" : "")}>
-                <span className="text-sm font-medium truncate">{role === 'admin' ? 'Administrador' : (user?.displayName || 'Usuario')}</span>
+                <span className="text-sm font-medium truncate">{profileName}</span>
                 <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
              </div>
              <TooltipProvider delayDuration={100}>

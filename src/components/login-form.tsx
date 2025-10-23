@@ -62,8 +62,8 @@ export default function LoginForm() {
         description: `Bienvenido, ${user.displayName || user.email || 'usuario'}. Redirigiendo...`,
     });
 
-    const targetPath = role === 'admin' ? '/admin/parking' : '/app/parking';
-    router.push(targetPath);
+    // We don't need to push here, AuthLayout will handle the redirection.
+    // This simplifies logic and avoids race conditions.
   };
 
   const handleGoogleSignIn = async () => {

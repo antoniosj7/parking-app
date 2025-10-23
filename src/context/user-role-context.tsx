@@ -20,26 +20,30 @@ export function UserRoleProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Start loading whenever the user object or its loading state changes.
+    setIsLoading(true);
+
     if (userLoading) {
-      setIsLoading(true);
+      // Still waiting for Firebase Auth to determine if a user is logged in.
       return;
     }
     
     if (user && database) {
-      // Get role from Realtime Database
+      // User is authenticated, now get their role from Realtime Database.
       const userRoleRef = ref(database, `users/${user.uid}/role`);
       const unsubscribe = onValue(userRoleRef, (snapshot) => {
-        const role = snapshot.val() as 'admin' | 'user' || 'user';
+        const role = snapshot.val() as 'admin' | 'user' || 'user'; // Default to 'user' if no role is set
         setUserRole(role);
-        setIsLoading(false);
+        setIsLoading(false); // Finished loading role
       }, (error) => {
         console.error('Error fetching user role from RTDB:', error);
-        setUserRole('user'); // Fallback to user
+        setUserRole('user'); // Fallback to 'user' on error
         setIsLoading(false);
       });
 
-      return () => unsubscribe();
+      return () => unsubscribe(); // Cleanup listener on unmount
     } else {
+      // No user is authenticated.
       setUserRole(null);
       setIsLoading(false);
     }
