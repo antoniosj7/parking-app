@@ -188,12 +188,6 @@ export default function LoginForm() {
                 {loading ? 'Entrando...' : 'Entrar como invitado'}
             </Button>
           </form>
-          <div className="mt-6 text-center text-sm">
-            ¿No tienes una cuenta?{" "}
-            <Link href="/signup" className="underline font-semibold text-primary">
-              Regístrate
-            </Link>
-          </div>
         </CardContent>
       </Card>
   )
