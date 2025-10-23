@@ -160,7 +160,7 @@ export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavPr
                 <AvatarFallback className="bg-primary/20 text-primary font-semibold">{userInitial}</AvatarFallback>
              </Avatar>
              <div className={cn("flex flex-col overflow-hidden", isCollapsed ? "sr-only" : "")}>
-                <span className="text-sm font-medium truncate">{user?.displayName || 'Usuario'}</span>
+                <span className="text-sm font-medium truncate">{role === 'admin' ? 'Administrador' : (user?.displayName || 'Usuario')}</span>
                 <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
              </div>
              <TooltipProvider delayDuration={100}>
