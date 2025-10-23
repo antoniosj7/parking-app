@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
 
@@ -63,7 +63,7 @@ export default function LoginForm() {
     } catch (error: any) {
         let description = "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.";
         if (error.code === 'auth/operation-not-allowed') {
-            description = "Inicio de sesión con Google no habilitado. Por favor, activa el proveedor de Google en la consola de Firebase.";
+            description = "La operación no está permitida. Por favor, asegúrate de que los proveedores de inicio de sesión (Email/Contraseña, Google) estén activados en la consola de Firebase.";
         }
         toast({
             variant: "destructive",
@@ -74,6 +74,31 @@ export default function LoginForm() {
         setGoogleLoading(false);
     }
   }
+
+  const handlePasswordReset = async () => {
+    if (!auth) return;
+    if (!email) {
+      toast({
+        variant: "destructive",
+        title: "Correo electrónico requerido",
+        description: "Por favor, introduce tu correo electrónico para restablecer la contraseña.",
+      });
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: "Correo de recuperación enviado",
+        description: `Se ha enviado un enlace para restablecer la contraseña a ${email}.`,
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo enviar el correo de recuperación. Verifica que el correo sea correcto.",
+      });
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -156,6 +181,13 @@ export default function LoginForm() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Contraseña</Label>
+                <button
+                  type="button"
+                  onClick={handlePasswordReset}
+                  className="ml-auto inline-block text-sm underline underline-offset-4 text-primary/80 hover:text-primary"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
               </div>
               <Input 
                 id="password" 
