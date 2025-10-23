@@ -24,8 +24,10 @@ export interface User {
 export interface Session {
   id: string;
   spotId: string;
-  userId: string;
+  userId: string | null;
+  user?: string; // displayName o email
   startTime: number; // timestamp
   endTime: number | null; // null si está activa
-  total: number | null;
+  status: 'active' | 'completed';
+  total: number | null; // calculado al final
 }

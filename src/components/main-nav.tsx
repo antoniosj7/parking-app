@@ -10,7 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
     LayoutDashboard, LogOut,
-    ChevronLeft, ChevronRight, ParkingCircle, Users
+    ChevronLeft, ChevronRight, ParkingCircle, Users,
+    History, BarChart, FileText, Settings, User
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
@@ -68,12 +69,18 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
 
 const adminLinks = [
     { href: '/admin', icon: <LayoutDashboard size={20} />, text: 'Panel Principal' },
-    { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
-    { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
+    { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Parqueo en Vivo' },
+    { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
+    { href: '/admin/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
+    { href: '/admin/users', icon: <Users size={20} />, text: 'Usuarios' },
+    { href: '/admin/stats', icon: <BarChart size={20} />, text: 'Estadísticas' },
+    { href: '/admin/settings', icon: <Settings size={20} />, text: 'Ajustes' },
 ];
 
 const userLinks = [
   { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
+  { href: '/me/sessions', icon: <History size={20} />, text: 'Mis Sesiones' },
+  { href: '/me/profile', icon: <User size={20} />, text: 'Mi Perfil' },
 ];
 
 interface MainNavProps {
@@ -114,6 +121,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
   };
 
   const links = isAdmin ? adminLinks : userLinks;
+  const homeHref = isAdmin ? '/admin' : '/grid';
 
   return (
     <aside className={cn(
@@ -121,7 +129,7 @@ export default function MainNav({ isCollapsed, toggleCollapse }: MainNavProps) {
         isCollapsed ? 'w-20' : 'w-64'
     )}>
         <div className={cn("flex items-center border-b h-16 shrink-0", isCollapsed ? 'justify-center px-2' : 'justify-between px-4')}>
-            <Link href={isAdmin ? '/admin' : '/grid'} className={cn("flex items-center gap-2 overflow-hidden", isCollapsed ? 'justify-center' : '')}>
+            <Link href={homeHref} className={cn("flex items-center gap-2 overflow-hidden", isCollapsed ? 'justify-center' : '')}>
                 <Logo className='h-8 w-8 text-primary' />
                 <span className={cn('font-bold text-lg font-headline whitespace-nowrap transition-opacity', isCollapsed ? 'sr-only' : 'delay-100')}>PUMG</span>
             </Link>
