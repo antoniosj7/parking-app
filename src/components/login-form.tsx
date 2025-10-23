@@ -63,7 +63,7 @@ export default function LoginForm() {
     } catch (error: any) {
         let description = "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.";
         if (error.code === 'auth/operation-not-allowed') {
-            description = "La operación no está permitida. Por favor, asegúrate de que los proveedores de inicio de sesión (Email/Contraseña, Google) estén activados en la consola de Firebase.";
+            description = "La operación no está permitida. Por favor, asegúrate de que el proveedor de inicio de sesión de Google esté activado en la consola de Firebase.";
         }
         toast({
             variant: "destructive",
@@ -85,6 +85,7 @@ export default function LoginForm() {
       });
       return;
     }
+    setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
       toast({
@@ -97,6 +98,8 @@ export default function LoginForm() {
         title: "Error",
         description: "No se pudo enviar el correo de recuperación. Verifica que el correo sea correcto.",
       });
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -124,7 +127,7 @@ export default function LoginForm() {
         } else if (error.code === 'auth/invalid-email') {
             description = "El formato del correo electrónico no es válido.";
         } else if (error.code === 'auth/operation-not-allowed') {
-            description = "La operación no está permitida. Por favor, asegúrate de que los proveedores de inicio de sesión (Email/Contraseña, Google) estén activados en la consola de Firebase.";
+            description = "La operación no está permitida. Por favor, asegúrate de que el proveedor de inicio de sesión (Email/Contraseña) esté activado en la consola de Firebase.";
         } else {
           description = "Ha ocurrido un error inesperado al iniciar sesión."
         }

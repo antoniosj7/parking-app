@@ -20,7 +20,6 @@ import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
 import { createUserWithEmailAndPassword, updateProfile, type User } from "firebase/auth";
 import { useAuth } from "@/firebase";
-import { Separator } from "./ui/separator";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -140,7 +139,7 @@ export default function SignupForm() {
                 required 
                 disabled={loading}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.g.value)}
               />
             </div>
             <Button type="submit" className="w-full mt-2" disabled={loading}>
