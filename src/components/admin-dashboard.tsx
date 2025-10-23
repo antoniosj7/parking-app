@@ -22,6 +22,10 @@ function SpotStatus({ spotId }: { spotId: string }) {
 
 export default function AdminDashboard() {
   const allowedSpotsList = Array.from(ALLOWED_SPOTS);
+  const { data: spotsData, loading: spotsLoading } = useRtdbValue<Record<string, boolean>>('/');
+  
+  const occupiedCount = spotsData ? Object.values(spotsData).filter(Boolean).length : 0;
+  const availableCount = allowedSpotsList.length - occupiedCount;
 
   return (
     <div className="grid gap-8">
@@ -38,6 +42,16 @@ export default function AdminDashboard() {
             <p className="text-sm text-muted-foreground mt-2">
                 Estas son las plazas que el sistema reconocerá. Los datos de cualquier otra plaza serán ignorados.
             </p>
+             <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium text-muted-foreground">Plazas Disponibles</p>
+                    {spotsLoading ? <Skeleton className="h-6 w-10"/> : <div className="text-2xl font-bold">{availableCount}</div>}
+                </div>
+                <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium text-muted-foreground">Plazas Ocupadas</p>
+                    {spotsLoading ? <Skeleton className="h-6 w-10"/> : <div className="text-2xl font-bold">{occupiedCount}</div>}
+                </div>
+            </div>
         </CardContent>
       </Card>
 

@@ -6,8 +6,7 @@ import { useUser } from './auth/use-user';
 import { FirebaseClientProvider } from './client-provider';
 import { useRtdbValue } from './rtdb/use-rtdb-value';
 
-// This function is a bit of a placeholder, we are not using it to initialize the app
-// on a per-request basis, but we are keeping it for now.
+// This function ensures that Firebase is initialized only once.
 function initializeFirebase() {
   const firebaseConfigStr = process.env.NEXT_PUBLIC_FIREBASE_CONFIG;
   if (!firebaseConfigStr) {
