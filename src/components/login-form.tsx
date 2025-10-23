@@ -42,19 +42,27 @@ export default function LoginForm() {
     }
     
     const userRef = ref(db, `users/${user.uid}`);
+    
+    // *** INICIO DE LA CORRECCIÓN ESPECIAL ***
+    // Si el usuario es admin@pumg.com, nos aseguramos de que su rol sea 'admin' en la RTDB.
+    // Esta es una medida de autocorrección para solucionar el problema de datos.
+    if (user.email === 'admin@pumg.com') {
+        const adminRoleRef = ref(db, `users/${user.uid}/role`);
+        await set(adminRoleRef, 'admin');
+        console.log('Rol de administrador corregido para admin@pumg.com');
+    }
+    // *** FIN DE LA CORRECCIÓN ESPECIAL ***
+    
     const snapshot = await get(userRef);
-    let role = 'user'; // Rol por defecto
     
     // Si el usuario no existe en la RTDB (es su primer login con Google), lo creamos
     if (!snapshot.exists()) {
         const newUser: Omit<DbUser, 'uid'> = {
             email: user.email!,
-            role: 'user',
+            role: 'user', // Rol por defecto para nuevos usuarios
             displayName: user.displayName || user.email!.split('@')[0],
         };
         await set(userRef, newUser);
-    } else {
-        role = snapshot.val().role || 'user';
     }
     
     toast({
@@ -62,8 +70,7 @@ export default function LoginForm() {
         description: `Bienvenido, ${user.displayName || user.email || 'usuario'}. Redirigiendo...`,
     });
 
-    // We don't need to push here, AuthLayout will handle the redirection.
-    // This simplifies logic and avoids race conditions.
+    // La redirección es manejada por AuthLayout, que reaccionará al cambio de rol.
   };
 
   const handleGoogleSignIn = async () => {
