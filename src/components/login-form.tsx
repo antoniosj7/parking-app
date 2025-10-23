@@ -61,14 +61,10 @@ export default function LoginForm() {
         const result = await signInWithPopup(auth, provider);
         await handleAuthSuccess(result.user);
     } catch (error: any) {
-        let description = "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.";
-        if (error.code === 'auth/operation-not-allowed') {
-            description = "La operación no está permitida. Por favor, asegúrate de que el proveedor de inicio de sesión de Google esté activado en la consola de Firebase.";
-        }
         toast({
             variant: "destructive",
             title: "Error de autenticación con Google",
-            description: description,
+            description: `${error.code} - ${error.message}`,
         });
     } finally {
         setGoogleLoading(false);
@@ -96,7 +92,7 @@ export default function LoginForm() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "No se pudo enviar el correo de recuperación. Verifica que el correo sea correcto.",
+        description: `${error.code} - ${error.message}`,
       });
     } finally {
         setLoading(false);
@@ -121,22 +117,10 @@ export default function LoginForm() {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         await handleAuthSuccess(userCredential.user);
     } catch (error: any) {
-        let description = "Usuario o contraseña incorrectos.";
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-            description = "El correo electrónico o la contraseña son incorrectos.";
-        } else if (error.code === 'auth/invalid-email') {
-            description = "El formato del correo electrónico no es válido.";
-        } else if (error.code === 'auth/operation-not-allowed') {
-            description = "La operación no está permitida. Por favor, asegúrate de que el proveedor de inicio de sesión (Email/Contraseña) esté activado en la consola de Firebase.";
-        } else {
-          description = "Ha ocurrido un error inesperado al iniciar sesión."
-        }
-
-
         toast({
             variant: "destructive",
             title: "Error de autenticación",
-            description: description,
+            description: `${error.code} - ${error.message}`,
         });
     } finally {
         setLoading(false);

@@ -68,22 +68,11 @@ export default function SignupForm() {
         await updateProfile(userCredential.user, { displayName });
         handleAuthSuccess(userCredential.user);
     } catch (error: any) {
-        let description = "Ha ocurrido un error inesperado al registrarse.";
-        if (error.code === 'auth/email-already-in-use') {
-            description = "Este correo electrónico ya está en uso.";
-        } else if (error.code === 'auth/invalid-email') {
-            description = "El formato del correo electrónico no es válido.";
-        } else if (error.code === 'auth/weak-password') {
-            description = "La contraseña es demasiado débil.";
-        } else if (error.code === 'auth/operation-not-allowed') {
-            description = "La operación no está permitida. Por favor, asegúrate de que el proveedor de inicio de sesión (Email/Contraseña) esté activado en la consola de Firebase.";
-        }
-        
-        toast({
-            variant: "destructive",
-            title: "Error de registro",
-            description: description,
-        });
+      toast({
+          variant: "destructive",
+          title: "Error de registro",
+          description: `${error.code} - ${error.message}`,
+      });
     } finally {
         setLoading(false);
     }
