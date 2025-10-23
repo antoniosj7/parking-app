@@ -1,7 +1,6 @@
 'use client';
 import Link from "next/link"
 import { useRouter } from 'next/navigation';
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -9,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUserRole } from "@/context/user-role-context";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
 import { useAuth } from "@/firebase";
 import { Separator } from "./ui/separator";
 
@@ -32,7 +32,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('123456789');
 
   const handleAuthSuccess = async (user: User) => {
-    const idTokenResult = await user.getIdTokenResult(true);
+    const idTokenResult = await user.getIdTokenResult(true); // Force refresh
     const role = (idTokenResult.claims.role as string) || 'user';
     
     setUserRole(role as 'admin' | 'user');
@@ -209,6 +209,17 @@ export default function LoginForm() {
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="flex-col !pb-6 !pt-2">
+           <p className="mt-2 text-xs text-center text-muted-foreground">
+              ¿No tienes una cuenta?{" "}
+              <Link
+                href="/signup"
+                className="underline underline-offset-4 text-primary/90 hover:text-primary"
+              >
+                Regístrate
+              </Link>
+            </p>
+        </CardFooter>
       </Card>
   )
 }
