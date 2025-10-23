@@ -72,7 +72,7 @@ const adminLinks = [
     { href: '/grid', icon: <ParkingCircle size={20} />, text: 'Parqueo en Vivo' },
     { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
     { href: '/admin/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
-    { href: '/admin/users', icon: <Users size={20} />, text: 'Usuarios' },
+    { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
     { href: '/admin/stats', icon: <BarChart size={20} />, text: 'Estadísticas' },
     { href: '/admin/settings', icon: <Settings size={20} />, text: 'Ajustes' },
 ];
