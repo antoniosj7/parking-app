@@ -66,7 +66,7 @@ const NavLink = ({ href, icon, text, isCollapsed, pathname }: NavLinkProps) => {
 
 const adminLinks = [
     { href: '/admin/parking', icon: <LayoutDashboard size={20} />, text: 'Parqueo' },
-    { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
+    // { href: '/admin/sessions', icon: <History size={20} />, text: 'Sesiones' },
     { href: '/admin/billing', icon: <FileText size={20} />, text: 'Cobros y Tarifas' },
     { href: '/admin/user-management', icon: <Users size={20} />, text: 'Usuarios' },
     { href: '/admin/stats', icon: <BarChart size={20} />, text: 'Estadísticas' },
