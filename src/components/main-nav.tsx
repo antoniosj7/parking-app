@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import {
     LayoutDashboard, LogOut,
     ChevronLeft, ChevronRight, ParkingCircle, Users,
-    History, BarChart, FileText, Settings, User as UserIcon
+    History, BarChart, FileText, Settings, User as UserIcon, Clock
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
@@ -75,7 +75,7 @@ const adminLinks = [
 
 const userLinks = [
   { href: '/app/parking', icon: <ParkingCircle size={20} />, text: 'Ver Parqueo' },
-  { href: '/app/session', icon: <ClockIcon size={20} />, text: 'Mi Sesión' },
+  { href: '/app/session', icon: <Clock size={20} />, text: 'Mi Sesión' },
   { href: '/app/history', icon: <History size={20} />, text: 'Mi Historial' },
   { href: '/app/profile', icon: <UserIcon size={20} />, text: 'Mi Perfil' },
 ];
@@ -84,26 +84,6 @@ interface MainNavProps {
   isCollapsed: boolean;
   toggleCollapse: () => void;
   role: 'admin' | 'user';
-}
-
-function ClockIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  )
 }
 
 export default function MainNav({ isCollapsed, toggleCollapse, role }: MainNavProps) {
