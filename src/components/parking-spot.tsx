@@ -5,7 +5,6 @@ import type { ParkingSpot as ParkingSpotType } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Car, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface ParkingSpotProps {
@@ -35,17 +34,7 @@ const statusConfig = {
 };
 
 export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotProps) {
-  const [countdown, setCountdown] = useState(10);
   const config = statusConfig[spot.status];
-
-  useEffect(() => {
-    if (isNotAllowed) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-  }, [isNotAllowed]);
 
   if (isNotAllowed) {
     return (
@@ -56,7 +45,6 @@ export default function ParkingSpot({ spot, isNotAllowed = false }: ParkingSpotP
         <CardContent className="flex flex-col items-center gap-2 p-4 pt-0">
           <AlertTriangle className="h-8 w-8 text-muted-foreground" />
           <p className="text-sm font-medium text-muted-foreground">No Permitido</p>
-          <p className="text-xs text-muted-foreground">(Oculto en {countdown}s)</p>
         </CardContent>
       </Card>
     );
