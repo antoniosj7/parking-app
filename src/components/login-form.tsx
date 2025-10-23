@@ -91,10 +91,7 @@ export default function LoginForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
-    if (email === 'admin@pumg.com' && password === 'admin') {
-      setLoading(true);
-    }
+    setLoading(true);
 
     if (!auth) {
         toast({
