@@ -19,7 +19,8 @@ import { Loader2 } from "lucide-react";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
 import { useAuth, useDatabase } from "@/firebase";
 import { Separator } from "./ui/separator";
-import { ref, get } from "firebase/database";
+import { ref, get, set } from "firebase/database";
+import type { User as DbUser } from "@/lib/types";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -40,23 +41,34 @@ export default function LoginForm() {
         });
         return;
     }
-    // Obtener el rol desde Realtime Database
-    const userRoleRef = ref(db, `users/${user.uid}/role`);
-    const snapshot = await get(userRoleRef);
-    const role = snapshot.val() || 'user';
+    
+    const userRef = ref(db, `users/${user.uid}`);
+    const snapshot = await get(userRef);
+    let role = 'user'; // Rol por defecto
+    
+    // Si el usuario no existe en la RTDB (es su primer login con Google), lo creamos
+    if (!snapshot.exists()) {
+        const newUser: Omit<DbUser, 'uid'> = {
+            email: user.email!,
+            role: 'user',
+            displayName: user.displayName || user.email!.split('@')[0],
+        };
+        await set(userRef, newUser);
+    } else {
+        role = snapshot.val().role || 'user';
+    }
     
     toast({
         title: "Login exitoso",
         description: `Bienvenido, ${user.displayName || user.email || 'usuario'}. Redirigiendo...`,
     });
 
-    // Redirigir según el rol
     const targetPath = role === 'admin' ? '/admin/parking' : '/app/parking';
     router.push(targetPath);
   };
 
   const handleGoogleSignIn = async () => {
-    if (!auth) {
+    if (!auth || !db) {
         toast({
             variant: "destructive",
             title: "Error de configuración",
@@ -68,8 +80,6 @@ export default function LoginForm() {
     const provider = new GoogleAuthProvider();
     try {
         const result = await signInWithPopup(auth, provider);
-        // Aquí deberíamos registrar al usuario en nuestra RTDB si es la primera vez
-        // Por ahora, asumimos que ya existe o lo manejamos en el `handleAuthSuccess`
         await handleAuthSuccess(result.user);
     } catch (error: any) {
         toast({
