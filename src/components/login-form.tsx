@@ -16,87 +16,15 @@ import { Logo } from "@/components/logo"
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, type User, sendPasswordResetEmail } from "firebase/auth";
-import { useAuth, useDatabase } from "@/firebase";
-import { ref, get, set } from "firebase/database";
-import type { User as DbUser } from "@/lib/types";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { useAuth } from "@/firebase";
 
 export default function LoginForm() {
-  const router = useRouter();
   const { toast } = useToast();
   const auth = useAuth();
-  const db = useDatabase();
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleAuthSuccess = async (user: User) => {
-    if (!db) {
-        toast({
-            variant: "destructive",
-            title: "Error de base de datos",
-            description: "No se pudo obtener el rol del usuario.",
-        });
-        return;
-    }
-    
-    const userRef = ref(db, `users/${user.uid}`);
-    
-    // *** INICIO DE LA CORRECCIÓN ESPECIAL ***
-    // Si el usuario es admin@pumg.com, nos aseguramos de que su rol sea 'admin' en la RTDB.
-    // Esta es una medida de autocorrección para solucionar el problema de datos.
-    if (user.email === 'admin@pumg.com') {
-        const adminRoleRef = ref(db, `users/${user.uid}/role`);
-        await set(adminRoleRef, 'admin');
-        console.log('Rol de administrador corregido para admin@pumg.com');
-    }
-    // *** FIN DE LA CORRECCIÓN ESPECIAL ***
-    
-    const snapshot = await get(userRef);
-    
-    // Si el usuario no existe en la RTDB (es su primer login con Google), lo creamos
-    if (!snapshot.exists()) {
-        const newUser: Omit<DbUser, 'uid'> = {
-            email: user.email!,
-            role: 'user', // Rol por defecto para nuevos usuarios
-            displayName: user.displayName || user.email!.split('@')[0],
-        };
-        await set(userRef, newUser);
-    }
-    
-    toast({
-        title: "Login exitoso",
-        description: `Bienvenido, ${user.displayName || user.email || 'usuario'}. Redirigiendo...`,
-    });
-
-    // La redirección es manejada por AuthLayout, que reaccionará al cambio de rol.
-  };
-
-  const handleGoogleSignIn = async () => {
-    if (!auth || !db) {
-        toast({
-            variant: "destructive",
-            title: "Error de configuración",
-            description: "No se ha podido conectar con el servicio de autenticación.",
-        });
-        return;
-    }
-    setGoogleLoading(true);
-    const provider = new GoogleAuthProvider();
-    try {
-        const result = await signInWithPopup(auth, provider);
-        await handleAuthSuccess(result.user);
-    } catch (error: any) {
-        toast({
-            variant: "destructive",
-            title: "Error con Google",
-            description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
-        });
-    } finally {
-        setGoogleLoading(false);
-    }
-  }
 
   const handlePasswordReset = async () => {
     if (!auth) return;
@@ -119,7 +47,7 @@ export default function LoginForm() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
+        description: error.message,
       });
     } finally {
         setLoading(false);
@@ -141,13 +69,16 @@ export default function LoginForm() {
     }
     
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        await handleAuthSuccess(userCredential.user);
+        await signInWithEmailAndPassword(auth, email, password);
+        toast({
+            title: "Login exitoso",
+            description: `Bienvenido. Redirigiendo...`,
+        });
     } catch (error: any) {
         toast({
             variant: "destructive",
             title: "Error de autenticación",
-            description: `${error.code || 'unknown_error'} - ${error.message || 'Error inesperado.'}`,
+            description: error.message,
         });
     } finally {
         setLoading(false);
@@ -160,36 +91,21 @@ export default function LoginForm() {
             <Logo className="mx-auto h-12 w-12 mb-4" />
           <CardTitle className="text-3xl font-headline">Bienvenido a PUMG</CardTitle>
           <CardDescription>
-            Inicia sesión para gestionar el aparcamiento
+            Inicia sesión para continuar
           </CardDescription>
         </CardHeader>
         <CardContent>
-            <div className="grid gap-4">
-              <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn} disabled={loading || googleLoading}>
-                {googleLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 177.2 56.4l-63.1 61.9C338.4 99.8 298.4 87 248 87c-73.2 0-134.3 59.4-134.3 132.3s61.1 132.3 134.3 132.3c84.3 0 115.7-64.2 120.2-95.7H248v-65.8h239.2c1.2 12.8 2.3 26.7 2.3 41.8z"></path></svg>
-                )}
-                {googleLoading ? 'Iniciando...' : 'Continuar con Google'}
-              </Button>
-            </div>
-            <div className="my-4 flex items-center">
-              <div className="flex-1 border-t border-border" />
-              <span className="mx-4 text-xs text-muted-foreground">O INICIA SESIÓN CON EMAIL</span>
-              <div className="flex-1 border-t border-border" />
-            </div>
           <form className="grid gap-4" onSubmit={handleSubmit}>
             <div className="grid gap-2">
-              <Label htmlFor="email">Usuario o Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
-                type="text"
+                type="email"
                 autoComplete="email"
                 placeholder="tu@email.com"
                 required
-                disabled={loading || googleLoading}
+                disabled={loading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -212,12 +128,12 @@ export default function LoginForm() {
                 autoComplete="current-password"
                 placeholder="••••••••"
                 required 
-                disabled={loading || googleLoading}
+                disabled={loading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full mt-2" disabled={loading || googleLoading}>
+            <Button type="submit" className="w-full mt-2" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
