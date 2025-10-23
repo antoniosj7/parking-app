@@ -1,0 +1,12 @@
+run:
+  build:
+    - npm install
+    - npm run build
+  runtime: nodejs20
+  env:
+    - variable: BUNDLE_USER_CODE
+      value: 'true'
+    - variable: PORT
+      value: '8080'
+    - variable: NODE_ENV
+      value: production
