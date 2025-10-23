@@ -5,7 +5,6 @@ import { FirebaseProvider } from './provider';
 import { getApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
-import { UserRoleProvider } from '@/context/user-role-context';
 
 // This provider is used to initialize Firebase on the client side.
 // It ensures that Firebase is initialized only once.
@@ -21,9 +20,7 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   
   return (
     <FirebaseProvider firebaseApp={firebaseApp} auth={auth} database={database}>
-      <UserRoleProvider>
-        {children}
-      </UserRoleProvider>
+      {children}
     </FirebaseProvider>
   );
 }
