@@ -6,10 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "reset:spots": "ts-node scripts/reset-spots.ts",
-    "seed:spots": "ts-node scripts/seed-spots.ts",
-    "set:admin": "ts-node scripts/set-admin-claim.ts"
+    "lint": "next lint"
   },
   "engines": {
     "node": ">=18 <21"
