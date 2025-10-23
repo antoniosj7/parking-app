@@ -187,7 +187,7 @@ export default function LoginForm() {
                 name="email"
                 type="text"
                 autoComplete="email"
-                placeholder="admin@pumg.com"
+                placeholder="tu@email.com"
                 required
                 disabled={loading || googleLoading}
                 value={email}
